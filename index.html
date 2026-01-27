@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A2C v7.4</title>
+    <title>A2C v8.1</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
@@ -23,7 +23,8 @@
             --text-muted: #888888;
             --inc: #00ff9d; 
             --exp: #ff0055;
-            --accent: #2d9cdb;
+            --inv: #f1c40f; 
+            --sav: #3498db;
             --radius: 20px;
         }
 
@@ -48,11 +49,27 @@
         .smart-card {
             background: linear-gradient(160deg, #1a1a1a, #0a0a0a); border: 1px solid #222;
             padding: 25px; border-radius: var(--radius); margin-bottom: 20px; text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); position: relative;
         }
         .main-balance { font-family: 'Fira Code', monospace; font-size: 2.5rem; font-weight: 700; margin: 10px 0; letter-spacing: -1px; }
         .label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
-        
+
+        /* PORTFOLIO ROW */
+        .portfolio-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .port-card { flex: 1; background: #111; border: 1px solid #222; padding: 15px; border-radius: 16px; position: relative; overflow: hidden; }
+        .port-label { font-size: 0.65rem; text-transform: uppercase; color: #666; font-weight: 700; margin-bottom: 5px; }
+        .port-val { font-family: 'Fira Code'; font-size: 1.1rem; font-weight: 600; }
+        .port-icon { position: absolute; right: 10px; bottom: 10px; font-size: 1.5rem; opacity: 0.2; }
+
+        /* WARNING BOX */
+        .warning-box {
+            background: rgba(255, 0, 85, 0.1); border: 1px solid var(--exp); color: var(--exp);
+            padding: 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; 
+            text-align: center; margin-bottom: 20px; display: none; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+
+        /* MONTHLY STATS */
         .safe-spend-box { display: flex; gap: 10px; margin-bottom: 25px; }
         .mini-card { flex: 1; background: var(--bg-card); padding: 15px; border-radius: 15px; border: 1px solid #222; text-align: center; }
         .mini-val { font-family: 'Fira Code'; font-size: 1rem; font-weight: 600; margin-top: 5px; }
@@ -73,13 +90,15 @@
         .t-meta { font-size: 0.7rem; color: #666; display: flex; gap: 6px; align-items: center; }
         .tag { padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.6rem; text-transform: uppercase; }
         .tag.rec { background: rgba(191,0,255,0.15); color: #d580ff; }
+        .tag.inv { background: rgba(241, 196, 15, 0.15); color: var(--inv); }
         .t-amt { font-family: 'Fira Code'; font-weight: 600; }
 
         /* FORM */
         .type-switch { display: flex; background: #000; padding: 4px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
-        .type-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #666; font-weight: 600; border-radius: 8px; transition: 0.3s; cursor: pointer; }
+        .type-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #666; font-weight: 600; border-radius: 8px; transition: 0.3s; cursor: pointer; font-size: 0.8rem; }
         .type-btn.active-exp { background: rgba(255, 0, 85, 0.2); color: var(--exp); }
         .type-btn.active-inc { background: rgba(0, 255, 157, 0.2); color: var(--inc); }
+        .type-btn.active-inv { background: rgba(241, 196, 15, 0.2); color: var(--inv); }
 
         .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .cat-item {
@@ -129,6 +148,15 @@
         .modal-sheet { background: #1c1c1c; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 25px 25px 0 0; padding: 25px; border-top: 1px solid #333; animation: slideUp 0.3s; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
+        /* CALENDAR ALERT BOX */
+        .alert-box {
+            background: #1c1c1c; padding: 30px; border-radius: 25px; text-align: center; width: 85%; max-width: 320px; border: 1px solid #333; 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        .alert-btn { width: 100%; padding: 14px; border-radius: 12px; border:none; font-weight:600; margin-top:10px; cursor:pointer;}
+        .btn-cal { background: #4285F4; color:white; }
+        .btn-cancel { background: #333; color:#aaa; }
+
         /* ANALYTICS */
         .segment-bar { display: flex; background: #111; padding: 4px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
         .seg-btn { flex: 1; background: none; border: none; color: #666; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
@@ -140,7 +168,7 @@
 
     <div class="container">
         <header>
-            <div class="logo">A2C v7.4</div>
+            <div class="logo">A2C v8.1</div>
         </header>
 
         <div id="view-home" class="view-section active">
@@ -155,13 +183,28 @@
                 <div class="main-balance blur-sens" id="main-balance">0.00€</div>
             </div>
 
+            <div id="warning-msg" class="warning-box"></div>
+
+            <div class="portfolio-row">
+                <div class="port-card">
+                    <div class="port-label" style="color:var(--sav)">Ahorro Total</div>
+                    <div class="port-val blur-sens" id="total-savings" style="color:var(--sav)">0€</div>
+                    <div class="port-icon">🐷</div>
+                </div>
+                <div class="port-card">
+                    <div class="port-label" style="color:var(--inv)">Inversiones</div>
+                    <div class="port-val blur-sens" id="total-invest" style="color:var(--inv)">0€</div>
+                    <div class="port-icon">📈</div>
+                </div>
+            </div>
+
             <div class="safe-spend-box">
                 <div class="mini-card">
-                    <div class="label" style="color:var(--inc)">Ingresos</div>
+                    <div class="label" style="color:var(--inc)">Ingresos (Mes)</div>
                     <div class="mini-val blur-sens" id="val-inc" style="color:var(--inc)">+0€</div>
                 </div>
                 <div class="mini-card">
-                    <div class="label" style="color:var(--exp)">Gastos</div>
+                    <div class="label" style="color:var(--exp)">Gastos (Mes)</div>
                     <div class="mini-val blur-sens" id="val-exp" style="color:var(--exp)">-0€</div>
                 </div>
             </div>
@@ -203,7 +246,7 @@
 
             <div class="setting-row" style="margin-top:20px; border-color:#222; opacity:0.6">
                  <div class="setting-title" style="color:#666; font-size:0.8rem">ZONA TÉCNICA</div>
-                 <div class="setting-desc">A2C FINANCIAL v7.4</div>
+                 <div class="setting-desc">A2C FINANCIAL v8.1</div>
             </div>
         </div>
 
@@ -232,9 +275,10 @@
             <div class="type-switch">
                 <button id="btn-type-exp" class="type-btn active-exp" onclick="setType('expense')">Gasto</button>
                 <button id="btn-type-inc" class="type-btn" onclick="setType('income')">Ingreso</button>
+                <button id="btn-type-inv" class="type-btn" onclick="setType('investment')">Inversión</button>
             </div>
 
-            <input type="text" id="inp-desc" placeholder="Concepto (ej. Nómina, Compra)" required>
+            <input type="text" id="inp-desc" placeholder="Concepto (ej. SP500, Nómina)" required>
             <div style="display:flex; gap:10px">
                 <input type="number" id="inp-amt" placeholder="0.00" step="0.01" style="flex:1" required>
                 <input type="date" id="inp-date" style="flex:1" required>
@@ -245,11 +289,21 @@
 
             <div style="display:flex; align-items:center; gap:10px; margin:20px 0; background:#111; padding:10px; border-radius:12px;">
                 <input type="checkbox" id="inp-rec" style="width:20px; height:20px; margin:0; accent-color:var(--neon-rec)">
-                <label for="inp-rec" style="font-size:0.9rem; color:#aaa">Fijo (Repetir cada mes)</label>
+                <label for="inp-rec" style="font-size:0.9rem; color:#aaa">Fijo / Recurrente</label>
             </div>
 
             <button class="btn-action btn-primary" onclick="saveTransaction()">GUARDAR</button>
             <button id="btn-delete-tr" class="btn-action btn-danger" style="display:none" onclick="deleteTr()">ELIMINAR</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="cal-overlay">
+        <div class="alert-box">
+            <div style="font-size:3rem; margin-bottom:15px;">📅</div>
+            <h3 style="margin-bottom:10px; color:#fff;">Programar</h3>
+            <p style="color:#aaa; font-size:0.9rem; margin-bottom:20px;" id="cal-text">...</p>
+            <button class="alert-btn btn-cal" id="btn-go-cal">Añadir a Google Calendar</button>
+            <button class="alert-btn btn-cancel" onclick="document.getElementById('cal-overlay').classList.remove('open')">Cancelar</button>
         </div>
     </div>
 
@@ -259,7 +313,8 @@
         const CATS = [
             {id:'food', n:'Comida', i:'🍔'}, {id:'home', n:'Casa', i:'🏠'}, {id:'trans', n:'Transp.', i:'🚗'}, 
             {id:'fun', n:'Ocio', i:'🎉'}, {id:'shop', n:'Compras', i:'🛍️'}, {id:'health', n:'Salud', i:'💊'}, 
-            {id:'bills', n:'Facturas', i:'📄'}, {id:'inc', n:'Ingreso', i:'💰'}
+            {id:'bills', n:'Facturas', i:'📄'}, {id:'inc', n:'Ingreso', i:'💰'},
+            {id:'invest', n:'Inversión', i:'📈'}
         ];
         
         let db = JSON.parse(localStorage.getItem('a2c_ultimate')) || [];
@@ -267,6 +322,7 @@
         let selectedCat = 'food';
         let currentType = 'expense';
         let charts = {};
+        let tempCalData = null; // Para el calendario
         
         let currentViewDate = new Date(); 
         let analyticsSegment = 'month';
@@ -301,17 +357,44 @@
             // Header Date
             document.getElementById('month-display').innerText = currentViewDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 
-            // GET DATA
+            // 1. CALCULATE GLOBALS
+            let globalLiquid = 0; 
+            let globalInvested = 0; 
+
+            db.forEach(t => {
+                if(t.cat === 'invest') {
+                    globalLiquid += t.amt; // resta
+                    globalInvested += Math.abs(t.amt); // suma
+                } else {
+                    globalLiquid += t.amt;
+                }
+            });
+
+            document.getElementById('total-savings').innerText = fmt(globalLiquid);
+            document.getElementById('total-invest').innerText = fmt(globalInvested);
+
+            // 2. MONTHLY STATS
             const visibleData = getMonthlyData(currentViewDate);
+            
+            const mIncome = visibleData.filter(t=>t.amt>0).reduce((a,b)=>a+b.amt,0);
+            const mExpense = visibleData.filter(t=>t.amt<0 && t.cat!=='invest').reduce((a,b)=>a+b.amt,0);
+            const mInvest = visibleData.filter(t=>t.cat==='invest').reduce((a,b)=>a+b.amt,0);
+            
+            const monthBalance = mIncome + mExpense + mInvest;
 
-            // Totals
-            const total = visibleData.reduce((a,b)=>a+b.amt,0);
-            const inc = visibleData.filter(t=>t.amt>0).reduce((a,b)=>a+b.amt,0);
-            const exp = visibleData.filter(t=>t.amt<0).reduce((a,b)=>a+b.amt,0);
+            document.getElementById('main-balance').innerText = fmt(monthBalance);
+            document.getElementById('val-inc').innerText = '+' + fmt(mIncome);
+            document.getElementById('val-exp').innerText = fmt(mExpense);
 
-            document.getElementById('main-balance').innerText = fmt(total);
-            document.getElementById('val-inc').innerText = '+' + fmt(inc);
-            document.getElementById('val-exp').innerText = fmt(exp);
+            // 3. ALERT SYSTEM
+            const warnBox = document.getElementById('warning-msg');
+            if ((mIncome + mExpense) < 0) {
+                const deficit = Math.abs(mIncome + mExpense);
+                warnBox.style.display = 'block';
+                warnBox.innerText = `⚠️ CUIDADO: Usando Ahorros (-${deficit.toFixed(0)}€)`;
+            } else {
+                warnBox.style.display = 'none';
+            }
 
             renderList(visibleData);
         }
@@ -320,18 +403,15 @@
             const tM = targetDate.getMonth();
             const tY = targetDate.getFullYear();
             
-            // Reales
             const real = db.filter(t => {
                 const d = new Date(t.date);
                 return d.getMonth() === tM && d.getFullYear() === tY;
             });
 
-            // Proyecciones
             const projected = [];
             db.forEach(t => {
                 if(t.rec) {
                     const d = new Date(t.date);
-                    // Si el original es anterior a este mes
                     if(d < new Date(tY, tM, 1)) {
                         projected.push({
                             ...t,
@@ -352,10 +432,11 @@
             
             list.filter(t => t.desc.toLowerCase().includes(q)).forEach(t => {
                 const c = CATS.find(x=>x.id===t.cat) || CATS[0];
-                const color = t.amt < 0 ? '#fff' : 'var(--inc)';
-                const tag = t.isProj ? '<span class="tag" style="background:#333;color:#aaa">PROYECTADO</span>' : (t.rec ? '<span class="tag rec">FIJO</span>' : '');
                 
-                // IMPORTANTE: Pasamos el ID como string con comillas para evitar errores con IDs numéricos
+                let color = t.amt < 0 ? '#fff' : 'var(--inc)';
+                if(t.cat === 'invest') color = 'var(--inv)';
+
+                const tag = t.isProj ? '<span class="tag" style="background:#333;color:#aaa">PROYECTADO</span>' : (t.rec ? '<span class="tag rec">FIJO</span>' : '');
                 const clickFn = `editTr('${t.id}')`;
 
                 el.innerHTML += `
@@ -403,6 +484,9 @@
             currentType = type;
             document.getElementById('btn-type-exp').className = type==='expense' ? 'type-btn active-exp' : 'type-btn';
             document.getElementById('btn-type-inc').className = type==='income' ? 'type-btn active-inc' : 'type-btn';
+            document.getElementById('btn-type-inv').className = type==='investment' ? 'type-btn active-inv' : 'type-btn';
+            if(type === 'investment') selCat('invest');
+            else if(selectedCat === 'invest') selCat('food'); 
         }
         function selCat(id) { selectedCat = id; renderCats(); }
 
@@ -414,18 +498,22 @@
             
             if(!desc || !rawAmt || !date) return;
             
-            let amt = currentType === 'expense' ? -Math.abs(rawAmt) : Math.abs(rawAmt);
+            let amt = 0;
+            if(currentType === 'expense') amt = -Math.abs(rawAmt);
+            else if(currentType === 'investment') amt = -Math.abs(rawAmt); 
+            else amt = Math.abs(rawAmt); 
 
             if(editingId) {
-                // Convertimos a string para asegurar comparación
                 const cleanId = String(editingId).replace('proj_', '');
                 const idx = db.findIndex(t=>String(t.id) === cleanId);
-                
                 if(idx > -1) {
                     db[idx] = {id:db[idx].id, desc, amt, date, cat:selectedCat, rec}; 
                 }
             } else {
-                db.push({id:Date.now(), desc, amt, date, cat:selectedCat, rec});
+                const newTr = {id:Date.now(), desc, amt, date, cat:selectedCat, rec};
+                db.push(newTr);
+                // Si es nuevo y recurrente, preguntar calendario
+                if(rec) askCalendar(newTr);
             }
             closeModal(); updateUI();
         }
@@ -433,23 +521,20 @@
         function editTr(id) {
             const isProj = String(id).startsWith('proj_');
             const cleanId = String(id).replace('proj_', '');
-            
-            // Usamos comparacion laxa (==) o String() para asegurar match entre string/num
             const t = db.find(x => String(x.id) === cleanId); 
             
             if(!t) return;
 
-            editingId = id; // Guardamos el ID tal cual (puede ser proj_...)
-            
+            editingId = id;
             document.getElementById('form-title').innerText = isProj ? "EDITAR REGLA ORIGINAL" : "EDITAR TRANSACCIÓN";
             document.getElementById('inp-desc').value = t.desc;
             document.getElementById('inp-amt').value = Math.abs(t.amt);
-            
-            // Si es proyección, la fecha que mostramos en el editor es la ORIGINAL de la regla
             document.getElementById('inp-date').value = t.date; 
-            
             document.getElementById('inp-rec').checked = t.rec;
-            setType(t.amt < 0 ? 'expense' : 'income');
+            
+            if(t.cat === 'invest') setType('investment');
+            else setType(t.amt < 0 ? 'expense' : 'income');
+            
             selCat(t.cat);
             
             document.getElementById('btn-delete-tr').style.display = 'block'; 
@@ -460,13 +545,28 @@
 
         function deleteTr() {
             const cleanId = String(editingId).replace('proj_', '');
-            
             if(confirm("¿Seguro que quieres eliminarlo?")) {
-                // Filtramos asegurando conversión a String
                 db = db.filter(t => String(t.id) !== cleanId);
                 closeModal(); updateUI();
             }
         }
+
+        // --- CALENDAR LOGIC ---
+        function askCalendar(d){ 
+            tempCalData=d; 
+            const typeText = d.amt < 0 ? "Gasto" : "Ingreso";
+            document.getElementById('cal-text').innerText=`¿Agendar "${d.desc}" en Google Calendar?`; 
+            document.getElementById('cal-overlay').classList.add('open'); 
+        }
+
+        document.getElementById('btn-go-cal').addEventListener('click', ()=>{
+            if(!tempCalData)return;
+            const d=new Date(tempCalData.date).toISOString().replace(/-|:|\.\d+/g,"").slice(0,8);
+            const verb = tempCalData.amt < 0 ? "Pagar" : "Cobrar";
+            const t=encodeURIComponent(`${verb} ${tempCalData.desc} (${Math.abs(tempCalData.amt)}€)`);
+            window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${t}&dates=${d}/${d}&recur=RRULE:FREQ=MONTHLY`,'_blank');
+            document.getElementById('cal-overlay').classList.remove('open');
+        });
 
         // --- BACKUP ---
         function exportData() {
@@ -531,7 +631,7 @@
                     labels: Object.keys(catAmts).map(k=>CATS.find(x=>x.id===k)?.n || k),
                     datasets: [{
                         data: Object.values(catAmts),
-                        backgroundColor: ['#2d9cdb','#bf00ff','#ff0055','#ffcc00','#00ff9d','#fff'],
+                        backgroundColor: ['#2d9cdb','#bf00ff','#ff0055','#ffcc00','#00ff9d','#fff','#f1c40f','#888'],
                         borderWidth: 0
                     }]
                 },
