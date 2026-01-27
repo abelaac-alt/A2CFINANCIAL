@@ -18,7 +18,7 @@
         :root {
             --bg-body: #000000;
             --bg-card: #111111;
-            --bg-nav: rgba(10, 10, 10, 0.9);
+            --bg-nav: rgba(15, 15, 15, 0.95); /* Más opaco para evitar toques fantasma */
             --text-main: #ffffff;
             --text-muted: #888888;
             --inc: #00ff9d; 
@@ -29,7 +29,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { background: var(--bg-body); font-family: 'Inter', sans-serif; color: var(--text-main); padding-bottom: 110px; height: 100vh; overflow-y: auto; }
+        body { background: var(--bg-body); font-family: 'Inter', sans-serif; color: var(--text-main); padding-bottom: 120px; height: 100vh; overflow-y: auto; }
         
         .container { max-width: 500px; margin: 0 auto; padding: 20px; }
         
@@ -43,7 +43,12 @@
         body.privacy-mode .blur-sens { filter: blur(6px); opacity: 0.7; transition: 0.3s; }
         body.privacy-mode .privacy-btn { filter: grayscale(0); }
 
-        /* BALANCE CARD & INTELLIGENCE */
+        /* VISTAS (Lógica CSS corregida) */
+        .view-section { display: none; opacity: 0; transition: opacity 0.2s; }
+        .view-section.active { display: block; opacity: 1; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* BALANCE CARD */
         .smart-card {
             background: linear-gradient(160deg, #1a1a1a, #0a0a0a); border: 1px solid #222;
             padding: 25px; border-radius: var(--radius); margin-bottom: 20px; position: relative; overflow: hidden;
@@ -56,9 +61,7 @@
         .budget-fill { height: 100%; border-radius: 10px; background: var(--accent); width: 0%; transition: width 0.5s; }
         .budget-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: #666; margin-top: 5px; }
 
-        .safe-spend-box {
-            display: flex; gap: 10px; margin-bottom: 25px;
-        }
+        .safe-spend-box { display: flex; gap: 10px; margin-bottom: 25px; }
         .mini-card { flex: 1; background: var(--bg-card); padding: 15px; border-radius: 15px; border: 1px solid #222; }
         .mini-val { font-family: 'Fira Code'; font-size: 1rem; font-weight: 600; margin-top: 5px; }
         
@@ -81,7 +84,7 @@
         .tag.rec { background: rgba(191,0,255,0.15); color: #d580ff; }
         .t-amt { font-family: 'Fira Code'; font-weight: 600; }
 
-        /* CATEGORY GRID (IN FORM) */
+        /* CATEGORY GRID */
         .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .cat-item {
             background: #111; border: 1px solid #222; border-radius: 12px; padding: 10px;
@@ -97,24 +100,29 @@
         .setting-desc { font-size: 0.8rem; color: #666; margin-bottom: 15px; }
         .btn-action { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
         .btn-primary { background: var(--text-main); color: #000; }
-        .btn-danger { background: rgba(255,0,85,0.15); color: var(--exp); }
 
         /* NAV & MODALS */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-nav);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid #222;
-            padding: 10px 20px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 100;
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: var(--bg-nav);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            border-top: 1px solid #222;
+            padding: 10px 20px 30px; /* Padding extra para iPhone X+ */
+            display: flex; justify-content: space-between; align-items: center; 
+            z-index: 999; /* Z-index alto para asegurar clicks */
         }
-        .nav-btn { background: none; border: none; color: #555; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 600; }
+        .nav-btn { background: none; border: none; color: #555; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 600; cursor: pointer; }
         .nav-btn svg { width: 24px; fill: currentColor; }
         .nav-btn.active { color: #fff; }
+        .nav-btn.active svg { fill: #fff; filter: drop-shadow(0 0 5px rgba(255,255,255,0.4)); }
+
         .add-fab {
             width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.2); transform: translateY(-20px); border: none;
+            font-size: 1.8rem; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.2); transform: translateY(-20px); border: none; cursor: pointer;
         }
 
-        /* MODAL COMMON */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: flex-end; }
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: flex-end; }
         .modal-overlay.open { display: flex; }
         .modal-sheet { background: #1c1c1c; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 25px 25px 0 0; padding: 25px; border-top: 1px solid #333; animation: slideUp 0.3s; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -125,9 +133,6 @@
         .filter-row { display: flex; gap: 10px; margin-bottom: 20px; }
         .filter-sel { background: #222; color: #fff; border: 1px solid #333; padding: 8px; border-radius: 10px; flex: 1; }
         .chart-container { height: 220px; margin: 20px 0; }
-
-        /* HIDDEN */
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -145,13 +150,12 @@
             <div class="smart-card">
                 <div class="label">Balance Total</div>
                 <div class="main-balance blur-sens" id="main-balance">0.00€</div>
-                
                 <div class="budget-bar-container">
                     <div class="budget-fill" id="budget-fill"></div>
                 </div>
                 <div class="budget-info">
                     <span>Presupuesto Mensual</span>
-                    <span id="budget-text">0% gastado</span>
+                    <span id="budget-text">0%</span>
                 </div>
             </div>
 
@@ -165,7 +169,7 @@
                     <div class="mini-val blur-sens" id="val-exp" style="color:var(--exp)">-0€</div>
                 </div>
                 <div class="mini-card" style="border-color: #333; background: #161616;">
-                    <div class="label" style="color:var(--accent)">Disponible Real</div>
+                    <div class="label" style="color:var(--accent)">Disp. Real</div>
                     <div class="mini-val blur-sens" id="val-safe">0€</div>
                 </div>
             </div>
@@ -176,7 +180,7 @@
             <div id="transactions-list" class="t-list"></div>
         </div>
 
-        <div id="view-analytics" class="view-section hidden">
+        <div id="view-analytics" class="view-section">
             <div class="label" style="margin-bottom:15px; font-size:1rem;">Analíticas</div>
             <div class="filter-row">
                 <select id="filter-year" class="filter-sel" onchange="runAnalytics()"></select>
@@ -185,38 +189,31 @@
                     <option value="current">Mes Actual</option>
                 </select>
             </div>
-
             <div class="mini-card" style="margin-bottom:20px">
                 <div class="chart-container"><canvas id="catChart"></canvas></div>
             </div>
-            
             <div class="mini-card">
                 <div class="chart-container"><canvas id="trendChart"></canvas></div>
             </div>
         </div>
 
-        <div id="view-settings" class="view-section hidden">
+        <div id="view-settings" class="view-section">
             <div class="label" style="margin-bottom:15px; font-size:1rem;">Configuración</div>
 
             <div class="setting-row">
                 <div class="setting-title">Presupuesto Mensual (€)</div>
-                <div class="setting-desc">Define tu límite de gasto para ver la barra de progreso.</div>
+                <div class="setting-desc">Define tu límite de gasto mensual.</div>
                 <input type="number" id="setting-budget" placeholder="Ej: 1500" onchange="saveSettings()">
             </div>
 
             <div class="setting-row">
                 <div class="setting-title">Copia de Seguridad</div>
-                <div class="setting-desc">Descarga tus datos para no perderlos nunca o restáuralos.</div>
+                <div class="setting-desc">Guarda tus datos o restáuralos si cambias de móvil.</div>
                 <div style="display:flex; gap:10px">
                     <button class="btn-action btn-primary" onclick="exportData()">⬇️ Descargar</button>
                     <button class="btn-action" style="background:#333; color:#fff" onclick="document.getElementById('import-file').click()">⬆️ Restaurar</button>
                     <input type="file" id="import-file" style="display:none" onchange="importData(this)">
                 </div>
-            </div>
-
-            <div class="setting-row" style="border-color:var(--exp)">
-                <div class="setting-title" style="color:var(--exp)">Zona de Peligro</div>
-                <button class="btn-action btn-danger" onclick="wipeData()">Borrar Todo</button>
             </div>
         </div>
 
@@ -254,6 +251,8 @@
             </div>
 
             <button class="btn-action btn-primary" onclick="saveTransaction()">GUARDAR</button>
+            
+            <button id="btn-delete-tr" class="btn-action" style="background:#333; color:#ff4444; margin-top:10px; display:none" onclick="deleteTr()">ELIMINAR</button>
         </div>
     </div>
 
@@ -276,7 +275,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             initDate(); initFilters(); renderCats();
             document.getElementById('setting-budget').value = settings.budget;
-            // Select filter month to current
             document.getElementById('filter-month').value = 'current';
             updateUI();
         });
@@ -287,6 +285,25 @@
             for(let i=y+1; i>=2023; i--) s.add(new Option(i,i,i===y,i===y));
         }
 
+        // --- NAVIGATION LOGIC FIX ---
+        function switchView(v) {
+            // Ocultar todas las vistas removiendo la clase active
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            // Mostrar la vista objetivo
+            document.getElementById('view-' + v).classList.add('active');
+            
+            // Actualizar botones del nav
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            if(v !== 'settings') {
+                const navBtn = document.getElementById('nav-' + v);
+                if(navBtn) navBtn.classList.add('active');
+            } else {
+                document.getElementById('nav-settings').classList.add('active');
+            }
+            
+            if(v === 'analytics') setTimeout(runAnalytics, 100);
+        }
+
         // --- CORE FUNCTIONS ---
         function updateUI() {
             db.sort((a,b) => new Date(b.date) - new Date(a.date));
@@ -295,15 +312,12 @@
             const total = db.reduce((a,b)=>a+b.amt,0);
             const inc = db.filter(t=>t.amt>0).reduce((a,b)=>a+b.amt,0);
             const exp = db.filter(t=>t.amt<0).reduce((a,b)=>a+b.amt,0);
-            const recurrents = db.filter(t=>t.amt<0 && t.rec).reduce((a,b)=>a+b.amt,0); // Sum of expenses
+            const recurrents = db.filter(t=>t.amt<0 && t.rec).reduce((a,b)=>a+b.amt,0);
 
-            // 1. Balance Cards
+            // Balance
             document.getElementById('main-balance').innerText = fmt(total);
             document.getElementById('val-inc').innerText = '+' + fmt(inc);
             document.getElementById('val-exp').innerText = fmt(exp);
-            
-            // Intelligence: "Disponible Real" = Balance - (Active Recurring Expenses * 1 month lookahead approx logic or just sum)
-            // Simpler: Balance - abs(Monthly Fixed Expenses)
             const safe = total - Math.abs(recurrents); 
             document.getElementById('val-safe').innerText = fmt(safe);
 
@@ -317,8 +331,9 @@
 
             // List
             renderList(db);
-
-            if(!document.getElementById('view-analytics').classList.contains('hidden')) runAnalytics();
+            
+            // Update analytics if visible
+            if(document.getElementById('view-analytics').classList.contains('active')) runAnalytics();
         }
 
         function renderList(list) {
@@ -361,7 +376,6 @@
             
             if(!desc || !amt || !date) return;
             
-            // Auto sign logic based on category
             if(selectedCat === 'inc') amt = Math.abs(amt);
             else amt = -Math.abs(amt);
 
@@ -382,26 +396,24 @@
             document.getElementById('inp-date').value = t.date;
             document.getElementById('inp-rec').checked = t.rec;
             selCat(t.cat);
+            document.getElementById('btn-delete-tr').style.display = 'block'; // Mostrar botón eliminar
             openModal();
+        }
+        
+        function deleteTr() {
+            if(editingId && confirm("¿Borrar esta transacción?")) {
+                db = db.filter(t => t.id !== editingId);
+                closeModal(); updateUI();
+            }
         }
 
         function selCat(id) {
             selectedCat = id;
             document.querySelectorAll('.cat-item').forEach(e => e.classList.remove('selected'));
-            renderCats(); // Re-render to show selection (lazy way)
+            renderCats();
         }
 
-        function deleteTr(id) {
-             // Implemented via long press or edit modal? Keeping minimalist: Edit modal -> clear inputs? 
-             // Let's add delete btn to edit? For now, simplistic overwrite.
-             // Actually, for this ULTIMATE version, let's keep it clean. To delete: clear Amount to 0.
-             if(confirm("¿Borrar transacción?")) {
-                 db = db.filter(t => t.id !== editingId);
-                 closeModal(); updateUI();
-             }
-        }
-
-        // --- SETTINGS & TOOLS ---
+        // --- SETTINGS ---
         function saveSettings() {
             settings.budget = parseFloat(document.getElementById('setting-budget').value) || 1000;
             localStorage.setItem('a2c_settings', JSON.stringify(settings));
@@ -438,13 +450,7 @@
             reader.readAsText(file);
         }
 
-        function wipeData() {
-            if(confirm("¿ESTÁS SEGURO? Se borrará todo para siempre.")) {
-                db = []; updateUI();
-            }
-        }
-
-        // --- ANALYTICS ENGINE ---
+        // --- ANALYTICS ---
         function runAnalytics() {
             const y = parseInt(document.getElementById('filter-year').value);
             const mVal = document.getElementById('filter-month').value;
@@ -470,7 +476,7 @@
                     labels: Object.keys(catAmts).map(k=>CATS.find(x=>x.id===k)?.n || k),
                     datasets: [{
                         data: Object.values(catAmts),
-                        backgroundColor: ['#2d9cdb','#bf00ff','#ff0055','#ffcc00','#00ff9d','#fff'],
+                        backgroundColor: ['#2d9cdb','#bf00ff','#ff0055','#ffcc00','#00ff9d','#fff','#888','#222'],
                         borderWidth: 0
                     }]
                 },
@@ -495,19 +501,17 @@
                 options: { maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}}, y:{display:false}} }
             });
         }
-
-        // --- NAVIGATION ---
-        function switchView(v) {
-            document.querySelectorAll('.view-section').forEach(e => e.classList.add('hidden'));
-            document.getElementById('view-'+v).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
-            if(v!=='settings') document.getElementById('nav-'+v).classList.add('active');
-            
-            if(v==='analytics') setTimeout(runAnalytics, 100);
-        }
         
-        function openModal() { document.getElementById('form-modal').classList.add('open'); if(!editingId){ document.getElementById('inp-date').valueAsDate = new Date(); document.getElementById('inp-amt').value=''; document.getElementById('inp-desc').value=''; selCat('food'); } }
+        function openModal() { 
+            document.getElementById('form-modal').classList.add('open'); 
+            if(!editingId){ 
+                document.getElementById('inp-date').valueAsDate = new Date(); 
+                document.getElementById('inp-amt').value=''; 
+                document.getElementById('inp-desc').value=''; 
+                document.getElementById('btn-delete-tr').style.display = 'none'; // Ocultar borrar si es nuevo
+                selCat('food'); 
+            } 
+        }
         function closeModal() { document.getElementById('form-modal').classList.remove('open'); editingId = null; }
         
         const fmt = (n) => n.toLocaleString('es-ES', {style:'currency', currency:'EUR'});
