@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A2C FINANCIAL</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#050505">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* Tema Dark Neon Optimizado */
+            --bg-body: #050505;
+            --bg-card: #121212;
+            --bg-nav: rgba(18, 18, 18, 0.85);
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --neon-inc: #00ff9d; 
+            --neon-exp: #ff0055;
+            --neon-rec: #bf00ff;
+            --neon-blue: #2d9cdb;
+            --radius: 20px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            padding-bottom: 100px;
+            height: 100vh;
+            overflow-y: auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+
+        /* HEADER */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; margin-top: 10px; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; background: linear-gradient(to right, #fff, #999); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .date-badge { font-size: 0.75rem; background: #1a1a1a; padding: 6px 12px; border-radius: 20px; color: var(--text-muted); border: 1px solid #333; }
+
+        /* VISTAS */
+        .view-section { display: none; animation: fadeIn 0.3s ease-out; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* TARJETA BALANCE */
+        .balance-card {
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+            border: 1px solid #333; padding: 25px; border-radius: var(--radius);
+            position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin-bottom: 30px;
+        }
+        .balance-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%); pointer-events: none;
+        }
+        .balance-label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1.5px; margin-bottom: 5px; }
+        .balance-amount { font-family: 'Fira Code', monospace; font-size: 2.8rem; font-weight: 600; margin-bottom: 20px; letter-spacing: -1px; }
+        
+        .stats-row { display: flex; gap: 15px; }
+        .stat-pill { flex: 1; background: #222; padding: 12px 15px; border-radius: 14px; display: flex; flex-direction: column; }
+        .stat-label { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 4px; }
+        .stat-val { font-family: 'Fira Code', monospace; font-size: 1rem; font-weight: 500; }
+        .c-inc { color: var(--neon-inc); } .c-exp { color: var(--neon-exp); }
+
+        /* LISTA */
+        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .t-item {
+            background: var(--bg-card); border: 1px solid #222; padding: 16px; border-radius: 18px; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: space-between; transition: transform 0.1s;
+        }
+        .t-item:active { transform: scale(0.98); background: #222; }
+        .t-icon-box {
+            width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; margin-right: 15px; background: #1a1a1a;
+        }
+        .t-info { flex: 1; }
+        .t-desc { font-weight: 600; font-size: 0.95rem; margin-bottom: 3px; color: #eee; }
+        .t-date { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+        .recur-tag { font-size: 0.6rem; background: rgba(191, 0, 255, 0.2); color: var(--neon-rec); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(191, 0, 255, 0.4); font-weight: 700; }
+        .t-amount { font-family: 'Fira Code', monospace; font-weight: 600; font-size: 1rem; }
+        .t-actions { margin-top: 5px; opacity: 0.5; text-align: right; }
+        .act-btn { background: none; border: none; color: inherit; font-size: 1rem; padding: 0 5px; cursor: pointer; }
+
+        /* MENU INFERIOR */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-nav);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid #222;
+            padding: 10px 0 25px 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; justify-items: center; z-index: 100;
+        }
+        .nav-btn { background: none; border: none; color: #555; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.7rem; font-weight: 600; cursor: pointer; width: 100%; }
+        .nav-btn svg { width: 26px; height: 26px; fill: currentColor; transition: fill 0.2s; }
+        .nav-btn.active { color: var(--text-main); }
+        .nav-btn.active svg { fill: var(--text-main); filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
+        
+        .add-fab {
+            width: 56px; height: 56px; background: linear-gradient(135deg, #fff, #999); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #000;
+            box-shadow: 0 0 15px rgba(255,255,255,0.15); border: none; transform: translateY(-12px); cursor: pointer;
+        }
+        .add-fab:active { transform: translateY(-12px) scale(0.9); }
+
+        /* FORMULARIO MODAL */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200;
+            backdrop-filter: blur(5px); display: none; align-items: flex-end; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        .modal-sheet {
+            background: #1c1c1c; width: 100%; max-width: 500px; border-radius: 25px 25px 0 0; padding: 30px 25px 40px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.5); border-top: 1px solid #333; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .sheet-handle { width: 40px; height: 5px; background: #444; border-radius: 10px; margin: 0 auto 25px; }
+        
+        .type-switch { display: flex; background: #111; padding: 4px; border-radius: 14px; margin-bottom: 20px; border: 1px solid #333; }
+        .type-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #666; font-weight: 600; border-radius: 10px; transition: 0.3s; cursor: pointer; }
+        .type-btn.active-exp { background: rgba(255, 0, 85, 0.2); color: var(--neon-exp); }
+        .type-btn.active-inc { background: rgba(0, 255, 157, 0.15); color: var(--neon-inc); }
+
+        input { width: 100%; background: #111; border: 1px solid #333; color: #fff; padding: 16px; border-radius: 14px; font-size: 1rem; margin-bottom: 12px; font-family: 'Inter', sans-serif; }
+        input:focus { border-color: #666; }
+        .check-row { display: flex; align-items: center; gap: 12px; margin: 20px 0; padding: 10px; background: #111; border-radius: 12px; }
+        .check-row input { width: 20px; height: 20px; margin: 0; accent-color: var(--neon-rec); }
+        
+        .save-btn { width: 100%; padding: 16px; border-radius: 16px; border: none; background: #fff; color: #000; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+        .save-btn:active { opacity: 0.8; transform: scale(0.98); }
+
+        /* ANALITICAS & OTROS */
+        .filter-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .filter-sel { background: #222; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 12px; flex: 1; font-size: 0.9rem; }
+        .chart-box { background: var(--bg-card); padding: 20px; border-radius: var(--radius); border: 1px solid #222; margin-bottom: 20px; }
+        .breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .bd-card { background: #1a1a1a; padding: 15px; border-radius: 15px; border: 1px solid #222; text-align: center; }
+        
+        .alert-box { background: #1c1c1c; padding: 30px; border-radius: 25px; text-align: center; width: 85%; max-width: 320px; border: 1px solid #333; position: absolute; top: 50%; transform: translateY(-50%); }
+        .alert-btn { width: 100%; padding: 14px; border-radius: 12px; border:none; font-weight:600; margin-top:10px; cursor:pointer;}
+        .btn-cal { background: #4285F4; color:white; }
+        .btn-cancel { background: #333; color:#aaa; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">A2C</div>
+            <div class="date-badge" id="header-date">...</div>
+        </header>
+
+        <div id="view-home" class="view-section active">
+            <div class="balance-card">
+                <div class="balance-label">Balance Total</div>
+                <div class="balance-amount" id="main-balance">0.00€</div>
+                <div class="stats-row">
+                    <div class="stat-pill"><span class="stat-label">Ingresos</span><span class="stat-val c-inc" id="main-inc">0€</span></div>
+                    <div class="stat-pill"><span class="stat-label">Gastos</span><span class="stat-val c-exp" id="main-exp">0€</span></div>
+                </div>
+            </div>
+            <div class="section-title"><span>Reciente</span></div>
+            <div id="transactions-list" style="padding-bottom:20px"></div>
+        </div>
+
+        <div id="view-analytics" class="view-section">
+            <div class="section-title">Analíticas</div>
+            <div class="filter-row">
+                <select id="filter-year" class="filter-sel" onchange="runAnalytics()"></select>
+                <select id="filter-month" class="filter-sel" onchange="runAnalytics()">
+                    <option value="all">Todo el Año</option>
+                    <option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option>
+                    <option value="3">Abril</option><option value="4">Mayo</option><option value="5">Junio</option>
+                    <option value="6">Julio</option><option value="7">Agosto</option><option value="8">Septiembre</option>
+                    <option value="9">Octubre</option><option value="10">Noviembre</option><option value="11">Diciembre</option>
+                </select>
+            </div>
+            <div class="breakdown">
+                <div class="bd-card"><div class="stat-label" style="color:var(--neon-rec)">Fijos</div><div class="stat-val" style="color:var(--neon-rec)" id="ana-recurring">0€</div></div>
+                <div class="bd-card"><div class="stat-label" style="color:var(--neon-exp)">Variables</div><div class="stat-val" style="color:var(--neon-exp)" id="ana-variable">0€</div></div>
+            </div>
+            <div class="chart-box"><div style="height:200px"><canvas id="cashflowChart"></canvas></div></div>
+            <div class="chart-box"><div style="height:180px"><canvas id="trendChart"></canvas></div></div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn active" id="nav-home" onclick="switchView('home')">
+            <svg viewBox="0 0 24 24"><path d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a1 1 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13zm7 7v-5h4v5h-4zm2-15.586 6 6V15l.001 5H16v-5c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v5H6v-9.586l6-6z"/></svg>
+            <span>Inicio</span>
+        </button>
+        <button class="add-fab" onclick="openForm()">+</button>
+        <button class="nav-btn" id="nav-analytics" onclick="switchView('analytics')">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/><path d="M11 7h2v7h-2zm0 8h2v2h-2z" transform="rotate(180 12 12)" style="display:none"/></svg>
+            <span>Data</span>
+        </button>
+    </nav>
+
+    <div class="modal-overlay" id="form-overlay" onclick="if(event.target===this) closeForm()">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
+            <form id="transaction-form">
+                <div class="type-switch">
+                    <button type="button" class="type-btn active-exp" id="btn-exp" onclick="setFormType('expense')">Gasto</button>
+                    <button type="button" class="type-btn" id="btn-inc" onclick="setFormType('income')">Ingreso</button>
+                </div>
+                <input type="text" id="inp-desc" placeholder="Concepto" required>
+                <div style="display:flex; gap:10px;">
+                    <input type="number" id="inp-amount" placeholder="0.00" step="0.01" style="flex:1" required>
+                    <input type="date" id="inp-date" style="flex:1" required>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="inp-recurring">
+                    <label for="inp-recurring" id="lbl-recurring" style="color:#ccc; font-size:0.9rem">Fijo Mensual</label>
+                </div>
+                <button type="submit" class="save-btn">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="cal-overlay">
+        <div class="alert-box">
+            <div style="font-size:3rem; margin-bottom:15px;">📅</div>
+            <h3 style="margin-bottom:10px; color:#fff;">Programar</h3>
+            <p style="color:#aaa; font-size:0.9rem; margin-bottom:20px;" id="cal-text">...</p>
+            <button class="alert-btn btn-cal" id="btn-go-cal">Google Calendar</button>
+            <button class="alert-btn btn-cancel" onclick="document.getElementById('cal-overlay').classList.remove('open')">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        Chart.defaults.color='#888'; Chart.defaults.borderColor='#222';
+        let transactions=JSON.parse(localStorage.getItem('a2c_db_final'))||[], editId=null, currentType='expense', tempCalData=null, charts={};
+        
+        document.addEventListener('DOMContentLoaded', ()=>{
+            document.getElementById('header-date').innerText=new Date().toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+            const sel=document.getElementById('filter-year'), y=new Date().getFullYear();
+            for(let i=y+1; i>=2023; i--) sel.add(new Option(i,i,i===y,i===y));
+            updateUI();
+        });
+
+        function updateUI(){
+            transactions.sort((a,b)=>new Date(b.date)-new Date(a.date));
+            localStorage.setItem('a2c_db_final', JSON.stringify(transactions));
+            
+            const list=document.getElementById('transactions-list'); list.innerHTML='';
+            transactions.slice(0,40).forEach(t=>{
+                const isExp=t.amount<0, isRec=t.isRecurring;
+                let color=isExp?'var(--neon-exp)':'var(--neon-inc)', icon=isExp?'💸':'💰', bg='rgba(255,255,255,0.05)';
+                if(isRec){ color=isExp?'var(--neon-rec)':'var(--neon-inc)'; icon='🔄'; bg='rgba(191,0,255,0.1)'; }
+                
+                list.innerHTML+=`<div class="t-item">
+                    <div style="display:flex; align-items:center; width:100%">
+                        <div class="t-icon-box" style="color:${color}; background:${bg}">${icon}</div>
+                        <div class="t-info"><div class="t-desc">${t.desc}</div><div class="t-date">${new Date(t.date).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})} ${isRec?'<span class="recur-tag">FIJO</span>':''}</div></div>
+                        <div style="text-align:right"><div class="t-amount" style="color:${color}">${t.amount>0?'+':''}${t.amount}€</div><div class="t-actions"><button class="act-btn" onclick="editItem(${t.id})">✎</button><button class="act-btn" onclick="delItem(${t.id})">×</button></div></div>
+                    </div></div>`;
+            });
+
+            const total=transactions.reduce((a,b)=>a+b.amount,0).toFixed(2);
+            document.getElementById('main-balance').innerText=total+'€';
+            document.getElementById('main-inc').innerText='+'+transactions.filter(t=>t.amount>0).reduce((a,b)=>a+b.amount,0).toFixed(2)+'€';
+            document.getElementById('main-exp').innerText=transactions.filter(t=>t.amount<0).reduce((a,b)=>a+b.amount,0).toFixed(2)+'€';
+
+            if(document.getElementById('view-analytics').classList.contains('active')) runAnalytics();
+        }
+
+        function openForm(){
+            document.getElementById('form-overlay').classList.add('open');
+            document.getElementById('transaction-form').reset();
+            document.getElementById('inp-date').valueAsDate=new Date();
+            setFormType('expense'); editId=null;
+        }
+        function closeForm(){ document.getElementById('form-overlay').classList.remove('open'); }
+        function setFormType(t){
+            currentType=t;
+            const e=document.getElementById('btn-exp'), i=document.getElementById('btn-inc');
+            if(t==='expense'){ e.className='type-btn active-exp'; i.className='type-btn'; }
+            else{ e.className='type-btn'; i.className='type-btn active-inc'; }
+        }
+
+        document.getElementById('transaction-form').addEventListener('submit', e=>{
+            e.preventDefault();
+            const desc=document.getElementById('inp-desc').value, raw=parseFloat(document.getElementById('inp-amount').value), date=document.getElementById('inp-date').value, rec=document.getElementById('inp-recurring').checked;
+            if(!desc||!raw||!date)return;
+            const amount=currentType==='expense'?-Math.abs(raw):Math.abs(raw);
+            if(editId){
+                const idx=transactions.findIndex(t=>t.id===editId);
+                if(idx>-1) transactions[idx]={id:editId,desc,amount,date,isRecurring:rec};
+            }else{
+                transactions.push({id:Date.now(),desc,amount,date,isRecurring:rec});
+                if(rec) askCalendar({desc,amount,date});
+            }
+            closeForm(); updateUI();
+        });
+
+        function editItem(id){
+            const t=transactions.find(x=>x.id===id); if(!t)return;
+            openForm(); editId=id;
+            document.getElementById('inp-desc').value=t.desc; document.getElementById('inp-amount').value=Math.abs(t.amount);
+            document.getElementById('inp-date').value=t.date; document.getElementById('inp-recurring').checked=t.isRecurring;
+            setFormType(t.amount<0?'expense':'income');
+        }
+        function delItem(id){ if(confirm('¿Borrar?')){ transactions=transactions.filter(t=>t.id!==id); updateUI(); } }
+
+        function askCalendar(d){ tempCalData=d; document.getElementById('cal-text').innerText=`¿Agendar ${d.amount<0?'Pago':'Ingreso'} Recurrente?`; document.getElementById('cal-overlay').classList.add('open'); }
+        document.getElementById('btn-go-cal').addEventListener('click', ()=>{
+            if(!tempCalData)return;
+            const d=new Date(tempCalData.date).toISOString().replace(/-|:|\.\d+/g,"").slice(0,8);
+            const t=encodeURIComponent((tempCalData.amount<0?'Pagar':'Cobrar')+' '+tempCalData.desc);
+            window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${t}&dates=${d}/${d}&recur=RRULE:FREQ=MONTHLY`,'_blank');
+            document.getElementById('cal-overlay').classList.remove('open');
+        });
+
+        function switchView(v){
+            document.querySelectorAll('.view-section').forEach(e=>e.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(e=>e.classList.remove('active'));
+            document.getElementById('view-'+v).classList.add('active');
+            if(v!=='home') document.getElementById('nav-'+v).classList.add('active');
+            else document.getElementById('nav-home').classList.add('active');
+            if(v==='analytics') setTimeout(runAnalytics,100);
+        }
+
+        function runAnalytics(){
+            const y=parseInt(document.getElementById('filter-year').value), m=document.getElementById('filter-month').value;
+            const flt=transactions.filter(t=>{ const d=new Date(t.date); return d.getFullYear()===y && (m==='all'||d.getMonth()===parseInt(m)); });
+            
+            document.getElementById('ana-recurring').innerText=Math.abs(flt.filter(t=>t.amount<0&&t.isRecurring).reduce((a,b)=>a+b.amount,0)).toFixed(0)+'€';
+            document.getElementById('ana-variable').innerText=Math.abs(flt.filter(t=>t.amount<0&&!t.isRecurring).reduce((a,b)=>a+b.amount,0)).toFixed(0)+'€';
+
+            const inc=flt.filter(t=>t.amount>0).reduce((a,b)=>a+b.amount,0), exp=Math.abs(flt.filter(t=>t.amount<0).reduce((a,b)=>a+b.amount,0));
+            if(charts.c1)charts.c1.destroy();
+            charts.c1=new Chart(document.getElementById('cashflowChart'),{type:'doughnut',data:{labels:['In','Out'],datasets:[{data:[inc,exp],backgroundColor:['#00ff9d','#ff0055'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#fff'}}},cutout:'75%'}});
+            
+            const days={}; flt.filter(t=>t.amount<0).forEach(t=>{ const d=new Date(t.date).getDate(); days[d]=(days[d]||0)+Math.abs(t.amount); });
+            const lbls=Object.keys(days).sort((a,b)=>a-b);
+            if(charts.c2)charts.c2.destroy();
+            charts.c2=new Chart(document.getElementById('trendChart'),{type:'bar',data:{labels:lbls,datasets:[{data:lbls.map(l=>days[l]),backgroundColor:'#2d9cdb',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#333'}}}}});
+        }
+    </script>
+</body>
+</html>
