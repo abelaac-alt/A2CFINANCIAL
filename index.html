@@ -83,7 +83,12 @@
         .tag.rec { background: rgba(191,0,255,0.15); color: #d580ff; }
         .t-amt { font-family: 'Fira Code'; font-weight: 600; }
 
-        /* CATEGORY GRID */
+        /* FORM ELEMENTS */
+        .type-switch { display: flex; background: #000; padding: 4px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
+        .type-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #666; font-weight: 600; border-radius: 8px; transition: 0.3s; cursor: pointer; }
+        .type-btn.active-exp { background: rgba(255, 0, 85, 0.2); color: var(--exp); }
+        .type-btn.active-inc { background: rgba(0, 255, 157, 0.2); color: var(--inc); }
+
         .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .cat-item {
             background: #111; border: 1px solid #222; border-radius: 12px; padding: 10px;
@@ -227,7 +232,6 @@
             <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg> Data
         </button>
         <button class="add-fab" onclick="openForm()">+</button>
-        
         <button class="nav-btn" id="nav-settings" onclick="switchView('settings')">
             <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> Ajustes
         </button>
@@ -237,6 +241,11 @@
         <div class="modal-sheet">
             <div style="text-align:center; margin-bottom:20px; color:#555; font-weight:700">NUEVA TRANSACCIÓN</div>
             
+            <div class="type-switch">
+                <button id="btn-type-exp" class="type-btn active-exp" onclick="setType('expense')">Gasto</button>
+                <button id="btn-type-inc" class="type-btn" onclick="setType('income')">Ingreso</button>
+            </div>
+
             <input type="text" id="inp-desc" placeholder="Concepto (ej. Mercadona)" required>
             <div style="display:flex; gap:10px">
                 <input type="number" id="inp-amt" placeholder="0.00" step="0.01" style="flex:1" required>
@@ -269,6 +278,7 @@
         let settings = JSON.parse(localStorage.getItem('a2c_settings')) || { budget: 1000 };
         let editingId = null;
         let selectedCat = 'food';
+        let currentType = 'expense'; // Para controlar si es Gasto o Ingreso
         let charts = {};
 
         // INIT
@@ -285,7 +295,7 @@
             for(let i=y+1; i>=2023; i--) s.add(new Option(i,i,i===y,i===y));
         }
 
-        // --- NAVIGATION LOGIC ---
+        // --- NAVIGATION ---
         function switchView(v) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById('view-' + v).classList.add('active');
@@ -300,7 +310,7 @@
             if(v === 'analytics') setTimeout(runAnalytics, 100);
         }
 
-        // --- CORE FUNCTIONS ---
+        // --- CORE UI ---
         function updateUI() {
             db.sort((a,b) => new Date(b.date) - new Date(a.date));
             localStorage.setItem('a2c_ultimate', JSON.stringify(db));
@@ -310,7 +320,7 @@
             const exp = db.filter(t=>t.amt<0).reduce((a,b)=>a+b.amt,0);
             const recurrents = db.filter(t=>t.amt<0 && t.rec).reduce((a,b)=>a+b.amt,0);
 
-            // Balance
+            // Cards
             document.getElementById('main-balance').innerText = fmt(total);
             document.getElementById('val-inc').innerText = '+' + fmt(inc);
             document.getElementById('val-exp').innerText = fmt(exp);
@@ -361,16 +371,32 @@
         }
 
         // --- ACTIONS ---
+        function setType(type) {
+            currentType = type;
+            const btnExp = document.getElementById('btn-type-exp');
+            const btnInc = document.getElementById('btn-type-inc');
+            
+            if (type === 'expense') {
+                btnExp.className = 'type-btn active-exp';
+                btnInc.className = 'type-btn';
+            } else {
+                btnExp.className = 'type-btn';
+                btnInc.className = 'type-btn active-inc';
+            }
+        }
+
         function saveTransaction() {
             const desc = document.getElementById('inp-desc').value;
-            let amt = parseFloat(document.getElementById('inp-amt').value);
+            let rawAmt = parseFloat(document.getElementById('inp-amt').value);
             const date = document.getElementById('inp-date').value;
             const rec = document.getElementById('inp-rec').checked;
             
-            if(!desc || !amt || !date) return;
+            if(!desc || !rawAmt || !date) return;
             
-            if(selectedCat === 'inc') amt = Math.abs(amt);
-            else amt = -Math.abs(amt);
+            // Determinar signo basado en el botón seleccionado
+            let amt = 0;
+            if(currentType === 'expense') amt = -Math.abs(rawAmt);
+            else amt = Math.abs(rawAmt);
 
             if(editingId) {
                 const idx = db.findIndex(t=>t.id === editingId);
@@ -388,6 +414,10 @@
             document.getElementById('inp-amt').value = Math.abs(t.amt);
             document.getElementById('inp-date').value = t.date;
             document.getElementById('inp-rec').checked = t.rec;
+            
+            // Set type based on amount
+            setType(t.amt < 0 ? 'expense' : 'income');
+            
             selCat(t.cat);
             document.getElementById('btn-delete-tr').style.display = 'block'; 
             openForm();
@@ -482,7 +512,6 @@
             });
         }
         
-        // CORREGIDO: Ahora las funciones se llaman igual
         function openForm() { 
             document.getElementById('form-modal').classList.add('open'); 
             if(!editingId){ 
@@ -490,6 +519,7 @@
                 document.getElementById('inp-amt').value=''; 
                 document.getElementById('inp-desc').value=''; 
                 document.getElementById('btn-delete-tr').style.display = 'none'; 
+                setType('expense'); // Reset a gasto por defecto
                 selCat('food'); 
             } 
         }
