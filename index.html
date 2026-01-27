@@ -18,7 +18,7 @@
         :root {
             --bg-body: #000000;
             --bg-card: #111111;
-            --bg-nav: rgba(15, 15, 15, 0.95); /* Más opaco para evitar toques fantasma */
+            --bg-nav: rgba(15, 15, 15, 0.95);
             --text-main: #ffffff;
             --text-muted: #888888;
             --inc: #00ff9d; 
@@ -39,11 +39,10 @@
         .header-actions { display: flex; gap: 15px; align-items: center; }
         .privacy-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; filter: grayscale(1); transition: 0.3s; }
         
-        /* PRIVACY BLUR */
         body.privacy-mode .blur-sens { filter: blur(6px); opacity: 0.7; transition: 0.3s; }
         body.privacy-mode .privacy-btn { filter: grayscale(0); }
 
-        /* VISTAS (Lógica CSS corregida) */
+        /* VISTAS */
         .view-section { display: none; opacity: 0; transition: opacity 0.2s; }
         .view-section.active { display: block; opacity: 1; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -65,7 +64,7 @@
         .mini-card { flex: 1; background: var(--bg-card); padding: 15px; border-radius: 15px; border: 1px solid #222; }
         .mini-val { font-family: 'Fira Code'; font-size: 1rem; font-weight: 600; margin-top: 5px; }
         
-        /* SEARCH & LIST */
+        /* LIST */
         .search-bar {
             width: 100%; background: #111; border: 1px solid #222; color: #fff; padding: 12px 15px;
             border-radius: 12px; margin-bottom: 20px; font-size: 0.9rem; transition: 0.3s;
@@ -94,22 +93,22 @@
         .cat-icon { font-size: 1.5rem; display: block; margin-bottom: 5px; }
         .cat-name { font-size: 0.6rem; color: #888; text-transform: uppercase; }
 
-        /* SETTINGS VIEW */
+        /* SETTINGS */
         .setting-row { background: var(--bg-card); padding: 20px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #222; }
         .setting-title { font-weight: 600; margin-bottom: 5px; }
         .setting-desc { font-size: 0.8rem; color: #666; margin-bottom: 15px; }
         .btn-action { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
         .btn-primary { background: var(--text-main); color: #000; }
 
-        /* NAV & MODALS */
+        /* NAV */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; 
             background: var(--bg-nav);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
             border-top: 1px solid #222;
-            padding: 10px 20px 30px; /* Padding extra para iPhone X+ */
+            padding: 10px 20px 30px; 
             display: flex; justify-content: space-between; align-items: center; 
-            z-index: 999; /* Z-index alto para asegurar clicks */
+            z-index: 999;
         }
         .nav-btn { background: none; border: none; color: #555; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 600; cursor: pointer; }
         .nav-btn svg { width: 24px; fill: currentColor; }
@@ -120,6 +119,7 @@
             width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-size: 1.8rem; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.2); transform: translateY(-20px); border: none; cursor: pointer;
         }
+        .add-fab:active { transform: scale(0.95); }
 
         /* MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: flex-end; }
@@ -227,6 +227,7 @@
             <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg> Data
         </button>
         <button class="add-fab" onclick="openForm()">+</button>
+        
         <button class="nav-btn" id="nav-settings" onclick="switchView('settings')">
             <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> Ajustes
         </button>
@@ -251,7 +252,6 @@
             </div>
 
             <button class="btn-action btn-primary" onclick="saveTransaction()">GUARDAR</button>
-            
             <button id="btn-delete-tr" class="btn-action" style="background:#333; color:#ff4444; margin-top:10px; display:none" onclick="deleteTr()">ELIMINAR</button>
         </div>
     </div>
@@ -285,14 +285,11 @@
             for(let i=y+1; i>=2023; i--) s.add(new Option(i,i,i===y,i===y));
         }
 
-        // --- NAVIGATION LOGIC FIX ---
+        // --- NAVIGATION LOGIC ---
         function switchView(v) {
-            // Ocultar todas las vistas removiendo la clase active
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            // Mostrar la vista objetivo
             document.getElementById('view-' + v).classList.add('active');
             
-            // Actualizar botones del nav
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             if(v !== 'settings') {
                 const navBtn = document.getElementById('nav-' + v);
@@ -300,7 +297,6 @@
             } else {
                 document.getElementById('nav-settings').classList.add('active');
             }
-            
             if(v === 'analytics') setTimeout(runAnalytics, 100);
         }
 
@@ -321,7 +317,7 @@
             const safe = total - Math.abs(recurrents); 
             document.getElementById('val-safe').innerText = fmt(safe);
 
-            // Budget Bar
+            // Budget
             const absExp = Math.abs(exp);
             const pct = Math.min((absExp / settings.budget) * 100, 100);
             const bar = document.getElementById('budget-fill');
@@ -329,10 +325,7 @@
             bar.style.background = pct > 90 ? 'var(--exp)' : (pct > 70 ? 'var(--warn)' : 'var(--accent)');
             document.getElementById('budget-text').innerText = `${pct.toFixed(0)}% de ${settings.budget}€`;
 
-            // List
             renderList(db);
-            
-            // Update analytics if visible
             if(document.getElementById('view-analytics').classList.contains('active')) runAnalytics();
         }
 
@@ -396,8 +389,8 @@
             document.getElementById('inp-date').value = t.date;
             document.getElementById('inp-rec').checked = t.rec;
             selCat(t.cat);
-            document.getElementById('btn-delete-tr').style.display = 'block'; // Mostrar botón eliminar
-            openModal();
+            document.getElementById('btn-delete-tr').style.display = 'block'; 
+            openForm();
         }
         
         function deleteTr() {
@@ -419,16 +412,14 @@
             localStorage.setItem('a2c_settings', JSON.stringify(settings));
             updateUI();
         }
-        
         function togglePrivacy() { document.body.classList.toggle('privacy-mode'); }
-        
         function filterList() {
             const q = document.getElementById('search-input').value.toLowerCase();
             const filtered = db.filter(t => t.desc.toLowerCase().includes(q));
             renderList(filtered);
         }
 
-        // BACKUP SYSTEM
+        // BACKUP
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
             const node = document.createElement('a');
@@ -436,7 +427,6 @@
             node.setAttribute("download", "backup_a2c.json");
             document.body.appendChild(node); node.click(); node.remove();
         }
-
         function importData(input) {
             const file = input.files[0];
             if(!file) return;
@@ -463,11 +453,8 @@
                 return true;
             });
 
-            // Cat Chart
             const catAmts = {};
-            flt.filter(t=>t.amt<0).forEach(t => {
-                catAmts[t.cat] = (catAmts[t.cat] || 0) + Math.abs(t.amt);
-            });
+            flt.filter(t=>t.amt<0).forEach(t => { catAmts[t.cat] = (catAmts[t.cat] || 0) + Math.abs(t.amt); });
             
             if(charts.c1) charts.c1.destroy();
             charts.c1 = new Chart(document.getElementById('catChart'), {
@@ -483,32 +470,26 @@
                 options: { maintainAspectRatio:false, plugins:{legend:{position:'right', labels:{color:'#fff'}}} }
             });
 
-            // Trend Chart
             const days = {};
-            flt.filter(t=>t.amt<0).forEach(t => {
-                const d = new Date(t.date).getDate();
-                days[d] = (days[d]||0) + Math.abs(t.amt);
-            });
+            flt.filter(t=>t.amt<0).forEach(t => { const d = new Date(t.date).getDate(); days[d] = (days[d]||0) + Math.abs(t.amt); });
             const lbls = Object.keys(days).sort((a,b)=>a-b);
             
             if(charts.c2) charts.c2.destroy();
             charts.c2 = new Chart(document.getElementById('trendChart'), {
                 type: 'bar',
-                data: {
-                    labels: lbls,
-                    datasets: [{ label:'Gasto Diario', data:lbls.map(l=>days[l]), backgroundColor:'#333', borderRadius:4 }]
-                },
+                data: { labels: lbls, datasets: [{ label:'Gasto Diario', data:lbls.map(l=>days[l]), backgroundColor:'#333', borderRadius:4 }] },
                 options: { maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}}, y:{display:false}} }
             });
         }
         
-        function openModal() { 
+        // CORREGIDO: Ahora las funciones se llaman igual
+        function openForm() { 
             document.getElementById('form-modal').classList.add('open'); 
             if(!editingId){ 
                 document.getElementById('inp-date').valueAsDate = new Date(); 
                 document.getElementById('inp-amt').value=''; 
                 document.getElementById('inp-desc').value=''; 
-                document.getElementById('btn-delete-tr').style.display = 'none'; // Ocultar borrar si es nuevo
+                document.getElementById('btn-delete-tr').style.display = 'none'; 
                 selCat('food'); 
             } 
         }
