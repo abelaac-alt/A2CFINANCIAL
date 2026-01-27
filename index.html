@@ -8,13 +8,14 @@
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050505">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            /* Tema Dark Neon Optimizado */
+            /* Tema Dark Neon */
             --bg-body: #050505;
             --bg-card: #121212;
             --bg-nav: rgba(18, 18, 18, 0.85);
@@ -30,13 +31,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; }
 
         body {
-            background-color: var(--bg-body);
-            font-family: 'Inter', sans-serif;
-            color: var(--text-main);
-            padding-bottom: 100px;
-            height: 100vh;
-            overflow-y: auto;
-            -webkit-font-smoothing: antialiased;
+            background-color: var(--bg-body); font-family: 'Inter', sans-serif; color: var(--text-main);
+            padding-bottom: 100px; height: 100vh; overflow-y: auto; -webkit-font-smoothing: antialiased;
         }
 
         .container { max-width: 500px; margin: 0 auto; padding: 20px; }
@@ -44,17 +40,11 @@
         /* HEADER */
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; margin-top: 10px; }
         .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; background: linear-gradient(to right, #fff, #999); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .date-badge { font-size: 0.75rem; background: #1a1a1a; padding: 6px 12px; border-radius: 20px; color: var(--text-muted); border: 1px solid #333; }
-
-        /* VISTAS */
-        .view-section { display: none; animation: fadeIn 0.3s ease-out; }
-        .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .date-badge { font-size: 0.75rem; background: #1a1a1a; padding: 6px 12px; border-radius: 20px; color: var(--text-muted); border: 1px solid #333; text-transform: capitalize; }
 
         /* TARJETA BALANCE */
         .balance-card {
-            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
-            border: 1px solid #333; padding: 25px; border-radius: var(--radius);
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d); border: 1px solid #333; padding: 25px; border-radius: var(--radius);
             position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin-bottom: 30px;
         }
         .balance-card::before {
@@ -66,7 +56,7 @@
         
         .stats-row { display: flex; gap: 15px; }
         .stat-pill { flex: 1; background: #222; padding: 12px 15px; border-radius: 14px; display: flex; flex-direction: column; }
-        .stat-label { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 4px; }
+        .stat-label { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
         .stat-val { font-family: 'Fira Code', monospace; font-size: 1rem; font-weight: 500; }
         .c-inc { color: var(--neon-inc); } .c-exp { color: var(--neon-exp); }
 
@@ -83,7 +73,7 @@
         }
         .t-info { flex: 1; }
         .t-desc { font-weight: 600; font-size: 0.95rem; margin-bottom: 3px; color: #eee; }
-        .t-date { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+        .t-date { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px; text-transform: capitalize; }
         .recur-tag { font-size: 0.6rem; background: rgba(191, 0, 255, 0.2); color: var(--neon-rec); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(191, 0, 255, 0.4); font-weight: 700; }
         .t-amount { font-family: 'Fira Code', monospace; font-weight: 600; font-size: 1rem; }
         .t-actions { margin-top: 5px; opacity: 0.5; text-align: right; }
@@ -163,7 +153,7 @@
                     <div class="stat-pill"><span class="stat-label">Gastos</span><span class="stat-val c-exp" id="main-exp">0€</span></div>
                 </div>
             </div>
-            <div class="section-title"><span>Reciente</span></div>
+            <div class="section-title"><span>Actividad Reciente</span></div>
             <div id="transactions-list" style="padding-bottom:20px"></div>
         </div>
 
@@ -180,7 +170,7 @@
                 </select>
             </div>
             <div class="breakdown">
-                <div class="bd-card"><div class="stat-label" style="color:var(--neon-rec)">Fijos</div><div class="stat-val" style="color:var(--neon-rec)" id="ana-recurring">0€</div></div>
+                <div class="bd-card"><div class="stat-label" style="color:var(--neon-rec)">Fijos (Recurrentes)</div><div class="stat-val" style="color:var(--neon-rec)" id="ana-recurring">0€</div></div>
                 <div class="bd-card"><div class="stat-label" style="color:var(--neon-exp)">Variables</div><div class="stat-val" style="color:var(--neon-exp)" id="ana-variable">0€</div></div>
             </div>
             <div class="chart-box"><div style="height:200px"><canvas id="cashflowChart"></canvas></div></div>
@@ -196,7 +186,7 @@
         <button class="add-fab" onclick="openForm()">+</button>
         <button class="nav-btn" id="nav-analytics" onclick="switchView('analytics')">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/><path d="M11 7h2v7h-2zm0 8h2v2h-2z" transform="rotate(180 12 12)" style="display:none"/></svg>
-            <span>Data</span>
+            <span>Reportes</span>
         </button>
     </nav>
 
@@ -208,16 +198,16 @@
                     <button type="button" class="type-btn active-exp" id="btn-exp" onclick="setFormType('expense')">Gasto</button>
                     <button type="button" class="type-btn" id="btn-inc" onclick="setFormType('income')">Ingreso</button>
                 </div>
-                <input type="text" id="inp-desc" placeholder="Concepto" required>
+                <input type="text" id="inp-desc" placeholder="Concepto (ej: Netflix, Nómina)" required>
                 <div style="display:flex; gap:10px;">
                     <input type="number" id="inp-amount" placeholder="0.00" step="0.01" style="flex:1" required>
                     <input type="date" id="inp-date" style="flex:1" required>
                 </div>
                 <div class="check-row">
                     <input type="checkbox" id="inp-recurring">
-                    <label for="inp-recurring" id="lbl-recurring" style="color:#ccc; font-size:0.9rem">Fijo Mensual</label>
+                    <label for="inp-recurring" id="lbl-recurring" style="color:#ccc; font-size:0.9rem">Es Fijo Mensual</label>
                 </div>
-                <button type="submit" class="save-btn">Guardar</button>
+                <button type="submit" class="save-btn">Guardar Transacción</button>
             </form>
         </div>
     </div>
@@ -227,7 +217,7 @@
             <div style="font-size:3rem; margin-bottom:15px;">📅</div>
             <h3 style="margin-bottom:10px; color:#fff;">Programar</h3>
             <p style="color:#aaa; font-size:0.9rem; margin-bottom:20px;" id="cal-text">...</p>
-            <button class="alert-btn btn-cal" id="btn-go-cal">Google Calendar</button>
+            <button class="alert-btn btn-cal" id="btn-go-cal">Añadir a Google Calendar</button>
             <button class="alert-btn btn-cancel" onclick="document.getElementById('cal-overlay').classList.remove('open')">Cancelar</button>
         </div>
     </div>
@@ -237,7 +227,7 @@
         let transactions=JSON.parse(localStorage.getItem('a2c_db_final'))||[], editId=null, currentType='expense', tempCalData=null, charts={};
         
         document.addEventListener('DOMContentLoaded', ()=>{
-            document.getElementById('header-date').innerText=new Date().toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+            document.getElementById('header-date').innerText=new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
             const sel=document.getElementById('filter-year'), y=new Date().getFullYear();
             for(let i=y+1; i>=2023; i--) sel.add(new Option(i,i,i===y,i===y));
             updateUI();
@@ -305,9 +295,9 @@
             document.getElementById('inp-date').value=t.date; document.getElementById('inp-recurring').checked=t.isRecurring;
             setFormType(t.amount<0?'expense':'income');
         }
-        function delItem(id){ if(confirm('¿Borrar?')){ transactions=transactions.filter(t=>t.id!==id); updateUI(); } }
+        function delItem(id){ if(confirm('¿Seguro que quieres borrar este registro?')){ transactions=transactions.filter(t=>t.id!==id); updateUI(); } }
 
-        function askCalendar(d){ tempCalData=d; document.getElementById('cal-text').innerText=`¿Agendar ${d.amount<0?'Pago':'Ingreso'} Recurrente?`; document.getElementById('cal-overlay').classList.add('open'); }
+        function askCalendar(d){ tempCalData=d; document.getElementById('cal-text').innerText=`¿Quieres agendar el ${d.amount<0?'Pago':'Ingreso'} de "${d.desc}" recurrentemente?`; document.getElementById('cal-overlay').classList.add('open'); }
         document.getElementById('btn-go-cal').addEventListener('click', ()=>{
             if(!tempCalData)return;
             const d=new Date(tempCalData.date).toISOString().replace(/-|:|\.\d+/g,"").slice(0,8);
@@ -334,7 +324,7 @@
 
             const inc=flt.filter(t=>t.amount>0).reduce((a,b)=>a+b.amount,0), exp=Math.abs(flt.filter(t=>t.amount<0).reduce((a,b)=>a+b.amount,0));
             if(charts.c1)charts.c1.destroy();
-            charts.c1=new Chart(document.getElementById('cashflowChart'),{type:'doughnut',data:{labels:['In','Out'],datasets:[{data:[inc,exp],backgroundColor:['#00ff9d','#ff0055'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#fff'}}},cutout:'75%'}});
+            charts.c1=new Chart(document.getElementById('cashflowChart'),{type:'doughnut',data:{labels:['Ingresos','Gastos'],datasets:[{data:[inc,exp],backgroundColor:['#00ff9d','#ff0055'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#fff'}}},cutout:'75%'}});
             
             const days={}; flt.filter(t=>t.amount<0).forEach(t=>{ const d=new Date(t.date).getDate(); days[d]=(days[d]||0)+Math.abs(t.amount); });
             const lbls=Object.keys(days).sort((a,b)=>a-b);
