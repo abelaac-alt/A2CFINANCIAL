@@ -126,12 +126,20 @@
         }
         .add-fab:active { transform: scale(0.95); }
 
-        /* MODAL */
+        /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: flex-end; }
         .modal-overlay.open { display: flex; }
         .modal-sheet { background: #1c1c1c; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 25px 25px 0 0; padding: 25px; border-top: 1px solid #333; animation: slideUp 0.3s; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
+        .alert-box {
+            background: #1c1c1c; padding: 30px; border-radius: 25px; text-align: center; width: 85%; max-width: 320px; border: 1px solid #333; 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); /* Centrado */
+        }
+        .alert-btn { width: 100%; padding: 14px; border-radius: 12px; border:none; font-weight:600; margin-top:10px; cursor:pointer;}
+        .btn-cal { background: #4285F4; color:white; }
+        .btn-cancel { background: #333; color:#aaa; }
+
         input { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 15px; border-radius: 12px; font-size: 1rem; margin-bottom: 12px; }
         
         /* ANALYTICS */
@@ -172,10 +180,6 @@
                 <div class="mini-card">
                     <div class="label" style="color:var(--exp)">Gastos</div>
                     <div class="mini-val blur-sens" id="val-exp" style="color:var(--exp)">-0€</div>
-                </div>
-                <div class="mini-card" style="border-color: #333; background: #161616;">
-                    <div class="label" style="color:var(--accent)">Disp. Real</div>
-                    <div class="mini-val blur-sens" id="val-safe">0€</div>
                 </div>
             </div>
 
@@ -265,6 +269,16 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="cal-overlay">
+        <div class="alert-box">
+            <div style="font-size:3rem; margin-bottom:15px;">📅</div>
+            <h3 style="margin-bottom:10px; color:#fff;">Programar</h3>
+            <p style="color:#aaa; font-size:0.9rem; margin-bottom:20px;" id="cal-text">...</p>
+            <button class="alert-btn btn-cal" id="btn-go-cal">Añadir a Google Calendar</button>
+            <button class="alert-btn btn-cancel" onclick="document.getElementById('cal-overlay').classList.remove('open')">Cancelar</button>
+        </div>
+    </div>
+
     <script>
         // CONFIG & STATE
         Chart.defaults.color = '#666'; Chart.defaults.borderColor = '#222';
@@ -278,7 +292,8 @@
         let settings = JSON.parse(localStorage.getItem('a2c_settings')) || { budget: 1000 };
         let editingId = null;
         let selectedCat = 'food';
-        let currentType = 'expense'; // Para controlar si es Gasto o Ingreso
+        let currentType = 'expense';
+        let tempCalData = null; // Para el calendario
         let charts = {};
 
         // INIT
@@ -318,14 +333,12 @@
             const total = db.reduce((a,b)=>a+b.amt,0);
             const inc = db.filter(t=>t.amt>0).reduce((a,b)=>a+b.amt,0);
             const exp = db.filter(t=>t.amt<0).reduce((a,b)=>a+b.amt,0);
-            const recurrents = db.filter(t=>t.amt<0 && t.rec).reduce((a,b)=>a+b.amt,0);
+            // safe-spend removed
 
             // Cards
             document.getElementById('main-balance').innerText = fmt(total);
             document.getElementById('val-inc').innerText = '+' + fmt(inc);
             document.getElementById('val-exp').innerText = fmt(exp);
-            const safe = total - Math.abs(recurrents); 
-            document.getElementById('val-safe').innerText = fmt(safe);
 
             // Budget
             const absExp = Math.abs(exp);
@@ -393,7 +406,6 @@
             
             if(!desc || !rawAmt || !date) return;
             
-            // Determinar signo basado en el botón seleccionado
             let amt = 0;
             if(currentType === 'expense') amt = -Math.abs(rawAmt);
             else amt = Math.abs(rawAmt);
@@ -402,7 +414,9 @@
                 const idx = db.findIndex(t=>t.id === editingId);
                 db[idx] = {id:editingId, desc, amt, date, cat:selectedCat, rec};
             } else {
-                db.push({id:Date.now(), desc, amt, date, cat:selectedCat, rec});
+                const newTr = {id:Date.now(), desc, amt, date, cat:selectedCat, rec};
+                db.push(newTr);
+                if(rec) askCalendar(newTr); // Trigger Calendar
             }
             closeModal(); updateUI();
         }
@@ -415,9 +429,7 @@
             document.getElementById('inp-date').value = t.date;
             document.getElementById('inp-rec').checked = t.rec;
             
-            // Set type based on amount
             setType(t.amt < 0 ? 'expense' : 'income');
-            
             selCat(t.cat);
             document.getElementById('btn-delete-tr').style.display = 'block'; 
             openForm();
@@ -512,6 +524,23 @@
             });
         }
         
+        // CALENDAR LOGIC
+        function askCalendar(d){ 
+            tempCalData=d; 
+            const typeText = d.amt < 0 ? "Gasto" : "Ingreso";
+            document.getElementById('cal-text').innerText=`¿Quieres agendar el ${typeText} "${d.desc}" recurrentemente en Google Calendar?`; 
+            document.getElementById('cal-overlay').classList.add('open'); 
+        }
+
+        document.getElementById('btn-go-cal').addEventListener('click', ()=>{
+            if(!tempCalData)return;
+            const d=new Date(tempCalData.date).toISOString().replace(/-|:|\.\d+/g,"").slice(0,8);
+            const verb = tempCalData.amt < 0 ? "Pagar" : "Cobrar";
+            const t=encodeURIComponent(`${verb} ${tempCalData.desc} (${Math.abs(tempCalData.amt)}€)`);
+            window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${t}&dates=${d}/${d}&recur=RRULE:FREQ=MONTHLY`,'_blank');
+            document.getElementById('cal-overlay').classList.remove('open');
+        });
+
         function openForm() { 
             document.getElementById('form-modal').classList.add('open'); 
             if(!editingId){ 
@@ -519,7 +548,7 @@
                 document.getElementById('inp-amt').value=''; 
                 document.getElementById('inp-desc').value=''; 
                 document.getElementById('btn-delete-tr').style.display = 'none'; 
-                setType('expense'); // Reset a gasto por defecto
+                setType('expense'); 
                 selCat('food'); 
             } 
         }
