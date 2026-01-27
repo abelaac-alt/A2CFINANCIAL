@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A2C v8.3 Pro</title>
+    <title>A2C v9.0 Analytics</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
@@ -23,11 +23,11 @@
             --text-main: #ffffff;
             --text-muted: #9ca3af;
             
-            /* Colores Semánticos (Más sofisticados) */
-            --inc: #2ecc71;  /* Verde Esmeralda */
-            --exp: #e74c3c;  /* Rojo Suave */
+            /* Colores Semánticos */
+            --inc: #2ecc71;  /* Verde */
+            --exp: #e74c3c;  /* Rojo */
             --inv: #f1c40f;  /* Oro */
-            --sav: #3498db;  /* Azul Corporativo */
+            --sav: #3498db;  /* Azul */
             
             --radius: 24px;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -54,7 +54,7 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
         }
         
-        /* DATE NAV - Floating Pill */
+        /* NAVIGATION DATE */
         .month-nav {
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 25px; background: rgba(255,255,255,0.05); 
@@ -65,7 +65,7 @@
         .nav-arrow:active { opacity: 1; transform: scale(1.2); }
         .current-month-label { font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1.5px; color: #ddd; }
 
-        /* CARDS - Glassmorphism */
+        /* CARDS */
         .smart-card {
             background: var(--bg-glass); 
             border: 1px solid var(--border-glass);
@@ -73,17 +73,28 @@
             padding: 30px 20px; border-radius: var(--radius); margin-bottom: 20px; text-align: center;
             box-shadow: var(--shadow); position: relative; overflow: hidden;
         }
-        /* Brillo sutil en la tarjeta principal */
         .smart-card::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
-            pointer-events: none;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%); pointer-events: none;
         }
 
         .main-balance { font-family: 'JetBrains Mono', monospace; font-size: 2.8rem; font-weight: 500; margin: 10px 0; letter-spacing: -1.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         .label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1.5px; font-weight: 600; }
 
-        /* PORTFOLIO ROW */
+        /* ANALYTICS SPECIFIC STYLES */
+        .kpi-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .kpi-card { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 12px; border-radius: 16px; text-align: center; }
+        .kpi-val { font-family: 'JetBrains Mono'; font-size: 0.9rem; font-weight: 600; margin-top: 5px; }
+        .kpi-title { font-size: 0.55rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+
+        .chart-box {
+            background: var(--bg-glass); border: 1px solid var(--border-glass);
+            padding: 20px; border-radius: 20px; margin-bottom: 20px;
+        }
+        .chart-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
+        .chart-title { font-size: 0.8rem; font-weight: 700; color: #eee; }
+
+        /* PORTFOLIO ROW (HOME) */
         .portfolio-row { display: flex; gap: 12px; margin-bottom: 25px; }
         .port-card { 
             flex: 1; background: var(--bg-glass); border: 1px solid var(--border-glass); 
@@ -94,19 +105,11 @@
         .port-val { font-family: 'JetBrains Mono'; font-size: 1.15rem; font-weight: 600; z-index: 2; position: relative; }
         .port-icon { position: absolute; right: 10px; bottom: 5px; font-size: 2.5rem; opacity: 0.08; filter: grayscale(1); z-index: 1; }
 
-        /* WARNING BOX */
-        .warning-box {
-            background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); color: #ff6b6b;
-            padding: 12px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; 
-            text-align: center; margin-bottom: 25px; display: none; 
-            box-shadow: 0 0 15px rgba(231, 76, 60, 0.1);
-        }
-
-        /* MONTHLY STATS */
+        /* MONTHLY STATS (HOME) */
         .safe-spend-box { display: flex; gap: 12px; margin-bottom: 30px; }
         .mini-card { flex: 1; background: rgba(255,255,255,0.03); padding: 16px; border-radius: 18px; border: 1px solid var(--border-glass); text-align: center; }
         .mini-val { font-family: 'JetBrains Mono'; font-size: 1rem; font-weight: 500; margin-top: 6px; }
-        
+
         /* LIST & ITEMS */
         .search-bar {
             width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); 
@@ -116,39 +119,32 @@
         .search-bar:focus { border-color: #444; background: rgba(0,0,0,0.5); }
 
         .t-list { display: flex; flex-direction: column; gap: 12px; }
-
         .t-item {
             background: linear-gradient(145deg, rgba(30,30,30,0.6), rgba(15,15,15,0.8));
-            border: 1px solid var(--border-glass); 
-            padding: 18px; 
-            border-radius: 20px;
-            display: flex; align-items: flex-start; justify-content: space-between;
-            min-height: 72px;
+            border: 1px solid var(--border-glass); padding: 18px; border-radius: 20px;
+            display: flex; align-items: flex-start; justify-content: space-between; min-height: 72px;
             transition: transform 0.1s;
         }
         .t-item:active { transform: scale(0.98); }
-        
         .t-left { display: flex; align-items: flex-start; flex: 1; padding-right: 15px; }
-
         .t-icon { 
-            width: 44px; height: 44px; 
-            border-radius: 14px; background: rgba(255,255,255,0.05); 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 1.3rem; margin-right: 16px; flex-shrink: 0;
+            width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.05); 
+            display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-right: 16px; flex-shrink: 0;
             border: 1px solid rgba(255,255,255,0.02);
         }
-        
-        .t-desc { 
-            font-weight: 500; font-size: 0.95rem; color: #f0f0f0; 
-            margin-bottom: 6px; white-space: normal; word-wrap: break-word; line-height: 1.4;
-        }
-        
+        .t-desc { font-weight: 500; font-size: 0.95rem; color: #f0f0f0; margin-bottom: 6px; white-space: normal; word-wrap: break-word; line-height: 1.4; }
         .t-meta { font-size: 0.75rem; color: #666; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
         .tag { padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 0.55rem; text-transform: uppercase; white-space: nowrap; letter-spacing: 0.5px; }
         .tag.rec { background: rgba(191,0,255,0.15); color: #d580ff; border: 1px solid rgba(191,0,255,0.2); }
         .tag.inv { background: rgba(241, 196, 15, 0.1); color: var(--inv); border: 1px solid rgba(241, 196, 15, 0.2); }
-        
         .t-amt { font-family: 'JetBrains Mono'; font-weight: 500; white-space: nowrap; margin-top: 5px; font-size: 1rem; }
+
+        /* WARNING BOX */
+        .warning-box {
+            background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); color: #ff6b6b;
+            padding: 12px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; 
+            text-align: center; margin-bottom: 25px; display: none; box-shadow: 0 0 15px rgba(231, 76, 60, 0.1);
+        }
 
         /* FORM */
         .type-switch { display: flex; background: #000; padding: 5px; border-radius: 16px; border: 1px solid var(--border-glass); margin-bottom: 25px; }
@@ -199,11 +195,7 @@
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
         }
 
-        /* Clase para ocultar menú */
-        .bottom-nav.nav-hidden {
-            transform: translate(-50%, 150%);
-            opacity: 0;
-        }
+        .bottom-nav.nav-hidden { transform: translate(-50%, 150%); opacity: 0; }
 
         .nav-btn { background: none; border: none; color: #666; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .nav-btn svg { width: 24px; fill: currentColor; }
@@ -223,7 +215,6 @@
         .modal-sheet { background: #161616; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 30px 30px 0 0; padding: 30px 25px; border-top: 1px solid #333; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        /* CALENDAR ALERT BOX */
         .alert-box {
             background: #1c1c1c; padding: 30px; border-radius: 25px; text-align: center; width: 85%; max-width: 320px; border: 1px solid #333; 
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 20px 50px rgba(0,0,0,0.8);
@@ -236,14 +227,14 @@
         .segment-bar { display: flex; background: #111; padding: 5px; border-radius: 16px; border: 1px solid var(--border-glass); margin-bottom: 25px; }
         .seg-btn { flex: 1; background: none; border: none; color: #666; padding: 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .seg-btn.active { background: #222; color: #fff; }
-        .chart-container { height: 220px; margin: 20px 0; }
+        .chart-container { height: 250px; margin: 10px 0; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <div class="logo">A2C v8.3</div>
+            <div class="logo">A2C v9.0</div>
         </header>
 
         <div id="view-home" class="view-section active">
@@ -292,17 +283,48 @@
 
         <div id="view-analytics" class="view-section">
             <div class="label" style="margin-bottom:15px; font-size:1rem;">Analíticas</div>
+            
             <div class="segment-bar">
                 <button class="seg-btn" id="seg-day" onclick="setAnalyticsSegment('day')">Día</button>
                 <button class="seg-btn" id="seg-week" onclick="setAnalyticsSegment('week')">Sem</button>
                 <button class="seg-btn active" id="seg-month" onclick="setAnalyticsSegment('month')">Mes</button>
                 <button class="seg-btn" id="seg-year" onclick="setAnalyticsSegment('year')">Año</button>
             </div>
-            <div class="mini-card" style="margin-bottom:20px">
+
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-title">Tasa Ahorro</div>
+                    <div class="kpi-val" id="kpi-rate" style="color:var(--sav)">0%</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Cash Flow</div>
+                    <div class="kpi-val" id="kpi-flow">0€</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Gasto Prom.</div>
+                    <div class="kpi-val" id="kpi-avg">0€</div>
+                </div>
+            </div>
+
+            <div class="chart-box">
+                <div class="chart-header">
+                    <div class="chart-title">FLUJO DE CAJA (Ingresos vs Gastos)</div>
+                </div>
+                <div class="chart-container"><canvas id="flowChart"></canvas></div>
+            </div>
+
+            <div class="chart-box">
+                <div class="chart-header">
+                    <div class="chart-title">GASTO POR CATEGORÍA</div>
+                </div>
                 <div class="chart-container"><canvas id="catChart"></canvas></div>
             </div>
-            <div class="mini-card">
-                <div class="chart-container"><canvas id="trendChart"></canvas></div>
+
+             <div class="chart-box">
+                <div class="chart-header">
+                    <div class="chart-title">DESTINO DEL DINERO</div>
+                </div>
+                <div class="chart-container"><canvas id="assetChart"></canvas></div>
             </div>
         </div>
 
@@ -321,7 +343,7 @@
 
             <div class="setting-row" style="margin-top:20px; border-color:#222; opacity:0.6">
                  <div class="setting-title" style="color:#666; font-size:0.75rem">ZONA TÉCNICA</div>
-                 <div class="setting-desc">A2C FINANCIAL v8.3 PRO</div>
+                 <div class="setting-desc">A2C FINANCIAL v9.0 ANALYTICS</div>
             </div>
         </div>
 
@@ -386,20 +408,17 @@
         // --- LOGIC: SCROLL HIDE NAV ---
         let lastScrollY = window.scrollY;
         const nav = document.getElementById('main-nav');
-
         window.addEventListener('scroll', () => {
-            if (window.scrollY > lastScrollY && window.scrollY > 50) {
-                // Scrolling Down
-                nav.classList.add('nav-hidden');
-            } else {
-                // Scrolling Up
-                nav.classList.remove('nav-hidden');
-            }
+            if (window.scrollY > lastScrollY && window.scrollY > 50) nav.classList.add('nav-hidden');
+            else nav.classList.remove('nav-hidden');
             lastScrollY = window.scrollY;
         });
 
-        // --- CORE LOGIC (UNCHANGED) ---
-        Chart.defaults.color = '#666'; Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+        // --- CORE LOGIC ---
+        Chart.defaults.color = '#777'; 
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+        Chart.defaults.font.family = 'Inter';
+        
         const CATS = [
             {id:'food', n:'Comida', i:'🍔'}, {id:'home', n:'Casa', i:'🏠'}, {id:'trans', n:'Transp.', i:'🚗'}, 
             {id:'fun', n:'Ocio', i:'🎉'}, {id:'shop', n:'Compras', i:'🛍️'}, {id:'health', n:'Salud', i:'💊'}, 
@@ -517,8 +536,8 @@
             list.filter(t => t.desc.toLowerCase().includes(q)).forEach(t => {
                 const c = CATS.find(x=>x.id===t.cat) || CATS[0];
                 
-                let color = t.amt < 0 ? '#fff' : 'var(--inc)';
-                if(t.cat === 'invest') color = 'var(--inv)';
+                let color = t.amt < 0 ? '#fff' : '#2ecc71';
+                if(t.cat === 'invest') color = '#f1c40f';
 
                 const tag = t.isProj ? '<span class="tag" style="background:rgba(255,255,255,0.1);color:#aaa">PROYECTADO</span>' : (t.rec ? '<span class="tag rec">FIJO</span>' : '');
                 const clickFn = `editTr('${t.id}')`;
@@ -700,40 +719,79 @@
                 return d >= start && d <= end;
             });
 
-            const catAmts = {};
-            flt.filter(t=>t.amt<0).forEach(t => { catAmts[t.cat] = (catAmts[t.cat] || 0) + Math.abs(t.amt); });
+            // 1. KPIs
+            const inc = flt.filter(t=>t.amt>0).reduce((a,b)=>a+b.amt,0);
+            const exp = flt.filter(t=>t.amt<0 && t.cat!=='invest').reduce((a,b)=>a+Math.abs(t.amt),0);
+            const inv = flt.filter(t=>t.cat==='invest').reduce((a,b)=>a+Math.abs(t.amt),0);
+            const saved = inc - exp;
+            const rate = inc > 0 ? ((saved/inc)*100).toFixed(0) : 0;
+            const count = flt.filter(t=>t.amt<0).length || 1;
+            const avg = (exp / count).toFixed(0);
+
+            document.getElementById('kpi-rate').innerText = `${rate}%`;
+            document.getElementById('kpi-flow').innerText = fmt(saved - inv); // Cashflow neto (tras inversion)
+            document.getElementById('kpi-avg').innerText = fmt(avg);
+
+            // 2. FLOW CHART
+            const flowData = {}; // Key: Date, Val: {inc, exp}
+            flt.forEach(t => {
+                let k = new Date(t.date).getDate();
+                if(analyticsSegment==='year') k = new Date(t.date).getMonth()+1;
+                
+                if(!flowData[k]) flowData[k] = {i:0, e:0};
+                if(t.amt > 0) flowData[k].i += t.amt;
+                else flowData[k].e += Math.abs(t.amt);
+            });
+            const flowLabels = Object.keys(flowData).sort((a,b)=>a-b);
             
             if(charts.c1) charts.c1.destroy();
-            charts.c1 = new Chart(document.getElementById('catChart'), {
+            charts.c1 = new Chart(document.getElementById('flowChart'), {
+                type: 'bar',
+                data: {
+                    labels: flowLabels,
+                    datasets: [
+                        { label:'Ingreso', data:flowLabels.map(l=>flowData[l].i), backgroundColor:'#2ecc71', borderRadius:4 },
+                        { label:'Salida', data:flowLabels.map(l=>flowData[l].e), backgroundColor:'#e74c3c', borderRadius:4 }
+                    ]
+                },
+                options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:'#fff'}}}, scales:{x:{grid:{display:false}}, y:{grid:{color:'rgba(255,255,255,0.05)'}}} }
+            });
+
+            // 3. CATEGORY CHART
+            const catAmts = {};
+            flt.filter(t=>t.amt<0 && t.cat!=='invest').forEach(t => { catAmts[t.cat] = (catAmts[t.cat] || 0) + Math.abs(t.amt); });
+            
+            if(charts.c2) charts.c2.destroy();
+            charts.c2 = new Chart(document.getElementById('catChart'), {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(catAmts).map(k=>CATS.find(x=>x.id===k)?.n || k),
                     datasets: [{
                         data: Object.values(catAmts),
-                        backgroundColor: ['#2d9cdb','#bf00ff','#ff0055','#ffcc00','#00ff9d','#fff','#f1c40f','#888'],
+                        backgroundColor: ['#e74c3c','#9b59b6','#3498db','#f39c12','#1abc9c','#ecf0f1'],
                         borderWidth: 0
                     }]
                 },
-                options: { maintainAspectRatio:false, plugins:{legend:{position:'right', labels:{color:'#fff'}}} }
+                options: { maintainAspectRatio:false, plugins:{legend:{position:'right', labels:{color:'#fff', font:{size:10}}}} }
             });
 
-            const days = {};
-            flt.filter(t=>t.amt<0).forEach(t => { 
-                let k = new Date(t.date).getDate();
-                if(analyticsSegment==='year') k = new Date(t.date).getMonth()+1;
-                days[k] = (days[k]||0) + Math.abs(t.amt); 
-            });
-            const lbls = Object.keys(days).sort((a,b)=>a-b);
-            
-            if(charts.c2) charts.c2.destroy();
-            charts.c2 = new Chart(document.getElementById('trendChart'), {
-                type: 'bar',
-                data: { labels: lbls, datasets: [{ label:'Gasto', data:lbls.map(l=>days[l]), backgroundColor:'#333', borderRadius:4 }] },
-                options: { maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}}, y:{display:false}} }
+            // 4. ASSET CHART
+            if(charts.c3) charts.c3.destroy();
+            charts.c3 = new Chart(document.getElementById('assetChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Gasto', 'Ahorro', 'Inversión'],
+                    datasets: [{
+                        data: [exp, Math.max(0, saved-inv), inv],
+                        backgroundColor: ['#e74c3c','#3498db','#f1c40f'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{color:'#fff'}}} }
             });
         }
         
-        const fmt = (n) => n.toLocaleString('es-ES', {style:'currency', currency:'EUR'});
+        const fmt = (n) => n.toLocaleString('es-ES', {style:'currency', currency:'EUR', maximumFractionDigits:0});
     </script>
 </body>
 </html>
