@@ -3,281 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A2C v9.0 Analytics</title>
+    <title>A2C v10.0</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
-    <meta name="theme-color" content="#050505">
+    <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            /* Colores Base Premium */
+            /* Palette Premium Dark */
             --bg-body: #050505;
-            --bg-glass: rgba(25, 25, 25, 0.65);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --text-main: #ffffff;
-            --text-muted: #9ca3af;
+            --bg-surface: #121212;
+            --bg-card: #1E1E1E;
+            --border-subtle: rgba(255, 255, 255, 0.08);
             
-            /* Colores Semánticos */
-            --inc: #2ecc71;  /* Verde */
-            --exp: #e74c3c;  /* Rojo */
-            --inv: #f1c40f;  /* Oro */
-            --sav: #3498db;  /* Azul */
+            /* Text */
+            --text-main: #FFFFFF;
+            --text-sec: #A0A0A0;
             
-            --radius: 24px;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            /* Finance Colors */
+            --inc: #4ADE80; /* Verde brillante */
+            --exp: #F87171; /* Rojo suave */
+            --inv: #FACC15; /* Dorado */
+            --sav: #38BDF8; /* Azul cielo */
+            
+            --radius-lg: 28px;
+            --radius-sm: 16px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; }
         
         body { 
-            background: radial-gradient(circle at top, #1a1a1a, #050505 80%);
-            font-family: 'Inter', sans-serif; 
+            background: var(--bg-body);
+            font-family: 'Manrope', sans-serif; 
             color: var(--text-main); 
             padding-bottom: 140px; 
             min-height: 100vh; 
             overflow-y: auto; 
+            -webkit-font-smoothing: antialiased;
         }
         
         .container { max-width: 500px; margin: 0 auto; padding: 20px 20px 40px; }
         
         /* HEADER */
-        header { display: flex; justify-content: space-between; align-items: center; margin: 15px 0 25px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 30px; }
         .logo { 
-            font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; 
-            background: linear-gradient(135deg, #fff 0%, #aaa 100%); 
+            font-weight: 800; font-size: 1.5rem; letter-spacing: -0.02em; 
+            background: linear-gradient(90deg, #fff, #888); 
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
         }
         
-        /* NAVIGATION DATE */
+        /* DATE NAV (Píldora Flotante) */
         .month-nav {
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 25px; background: rgba(255,255,255,0.05); 
-            padding: 10px 15px; border-radius: 50px; 
-            border: 1px solid var(--border-glass); backdrop-filter: blur(10px);
+            margin-bottom: 25px; 
+            background: rgba(30, 30, 30, 0.5); 
+            padding: 8px 12px; border-radius: 100px; 
+            border: 1px solid var(--border-subtle); 
+            backdrop-filter: blur(12px);
+            width: fit-content; margin-left: auto; margin-right: auto;
         }
-        .nav-arrow { background: none; border: none; color: #fff; font-size: 1.1rem; padding: 0 10px; cursor: pointer; opacity: 0.7; transition: 0.2s; }
-        .nav-arrow:active { opacity: 1; transform: scale(1.2); }
-        .current-month-label { font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1.5px; color: #ddd; }
+        .nav-arrow { 
+            background: none; border: none; color: #fff; 
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s; 
+        }
+        .nav-arrow:active { background: rgba(255,255,255,0.1); }
+        .current-month-label { font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px; padding: 0 15px; text-transform: uppercase; }
 
-        /* CARDS */
+        /* HERO CARD (Balance) */
         .smart-card {
-            background: var(--bg-glass); 
-            border: 1px solid var(--border-glass);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            padding: 30px 20px; border-radius: var(--radius); margin-bottom: 20px; text-align: center;
-            box-shadow: var(--shadow); position: relative; overflow: hidden;
+            background: linear-gradient(180deg, var(--bg-card) 0%, #161616 100%);
+            border: 1px solid var(--border-subtle);
+            padding: 35px 25px; border-radius: var(--radius-lg); margin-bottom: 25px; text-align: center;
+            position: relative; overflow: hidden;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
         }
-        .smart-card::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%); pointer-events: none;
+        .main-balance { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 3rem; font-weight: 500; 
+            margin: 10px 0; letter-spacing: -2px; 
         }
+        .label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-sec); font-weight: 600; letter-spacing: 1px; }
 
-        .main-balance { font-family: 'JetBrains Mono', monospace; font-size: 2.8rem; font-weight: 500; margin: 10px 0; letter-spacing: -1.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1.5px; font-weight: 600; }
-
-        /* ANALYTICS SPECIFIC STYLES */
-        .kpi-row { display: flex; gap: 10px; margin-bottom: 20px; }
-        .kpi-card { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 12px; border-radius: 16px; text-align: center; }
-        .kpi-val { font-family: 'JetBrains Mono'; font-size: 0.9rem; font-weight: 600; margin-top: 5px; }
-        .kpi-title { font-size: 0.55rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
-
-        .chart-box {
-            background: var(--bg-glass); border: 1px solid var(--border-glass);
-            padding: 20px; border-radius: 20px; margin-bottom: 20px;
-        }
-        .chart-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
-        .chart-title { font-size: 0.8rem; font-weight: 700; color: #eee; }
-
-        /* PORTFOLIO ROW (HOME) */
-        .portfolio-row { display: flex; gap: 12px; margin-bottom: 25px; }
+        /* PATRIMONIO ROW */
+        .portfolio-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .port-card { 
-            flex: 1; background: var(--bg-glass); border: 1px solid var(--border-glass); 
-            padding: 16px; border-radius: 18px; position: relative; overflow: hidden; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            background: var(--bg-surface); border: 1px solid var(--border-subtle); 
+            padding: 20px; border-radius: var(--radius-sm); position: relative; 
+            display: flex; flex-direction: column; justify-content: space-between; height: 100px;
         }
-        .port-label { font-size: 0.6rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
-        .port-val { font-family: 'JetBrains Mono'; font-size: 1.15rem; font-weight: 600; z-index: 2; position: relative; }
-        .port-icon { position: absolute; right: 10px; bottom: 5px; font-size: 2.5rem; opacity: 0.08; filter: grayscale(1); z-index: 1; }
+        .port-label { font-size: 0.7rem; color: var(--text-sec); font-weight: 600; text-transform: uppercase; }
+        .port-val { font-family: 'JetBrains Mono'; font-size: 1.2rem; font-weight: 600; letter-spacing: -0.5px; }
+        .port-icon { position: absolute; right: 15px; top: 15px; font-size: 1.2rem; opacity: 0.8; }
 
-        /* MONTHLY STATS (HOME) */
-        .safe-spend-box { display: flex; gap: 12px; margin-bottom: 30px; }
-        .mini-card { flex: 1; background: rgba(255,255,255,0.03); padding: 16px; border-radius: 18px; border: 1px solid var(--border-glass); text-align: center; }
-        .mini-val { font-family: 'JetBrains Mono'; font-size: 1rem; font-weight: 500; margin-top: 6px; }
-
-        /* LIST & ITEMS */
-        .search-bar {
-            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); 
-            color: #fff; padding: 14px 20px; border-radius: 16px; margin-bottom: 25px; 
-            font-size: 0.95rem; transition: 0.3s;
+        /* MONTH SUMMARY ROW */
+        .month-stats { display: flex; gap: 15px; margin-bottom: 35px; }
+        .stat-pill { 
+            flex: 1; background: rgba(255,255,255,0.03); 
+            padding: 12px 15px; border-radius: 12px; 
+            display: flex; align-items: center; justify-content: space-between;
         }
-        .search-bar:focus { border-color: #444; background: rgba(0,0,0,0.5); }
+        .stat-val { font-family: 'JetBrains Mono'; font-size: 0.95rem; font-weight: 600; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; display: inline-block; }
 
-        .t-list { display: flex; flex-direction: column; gap: 12px; }
+        /* TRANSACTIONS LIST WITH DATE HEADERS */
+        .date-header {
+            font-size: 0.8rem; font-weight: 700; color: var(--text-sec); 
+            margin: 20px 0 10px 5px; text-transform: uppercase; letter-spacing: 0.5px;
+            position: sticky; top: 0; z-index: 5; /* Sticky effect (optional, removed via JS if buggy) */
+        }
+
         .t-item {
-            background: linear-gradient(145deg, rgba(30,30,30,0.6), rgba(15,15,15,0.8));
-            border: 1px solid var(--border-glass); padding: 18px; border-radius: 20px;
-            display: flex; align-items: flex-start; justify-content: space-between; min-height: 72px;
-            transition: transform 0.1s;
+            background: var(--bg-surface); 
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            padding: 16px; 
+            display: flex; align-items: flex-start; justify-content: space-between;
+            transition: background 0.2s;
         }
-        .t-item:active { transform: scale(0.98); }
+        .t-item:first-child { border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .t-item:last-child { border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; border-bottom: none; }
+        .t-item:active { background: rgba(255,255,255,0.05); }
+
+        .t-group { margin-bottom: 10px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-subtle); }
+
         .t-left { display: flex; align-items: flex-start; flex: 1; padding-right: 15px; }
         .t-icon { 
-            width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.05); 
-            display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-right: 16px; flex-shrink: 0;
-            border: 1px solid rgba(255,255,255,0.02);
+            width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.05); 
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: 15px; flex-shrink: 0;
         }
-        .t-desc { font-weight: 500; font-size: 0.95rem; color: #f0f0f0; margin-bottom: 6px; white-space: normal; word-wrap: break-word; line-height: 1.4; }
-        .t-meta { font-size: 0.75rem; color: #666; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-        .tag { padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 0.55rem; text-transform: uppercase; white-space: nowrap; letter-spacing: 0.5px; }
-        .tag.rec { background: rgba(191,0,255,0.15); color: #d580ff; border: 1px solid rgba(191,0,255,0.2); }
-        .tag.inv { background: rgba(241, 196, 15, 0.1); color: var(--inv); border: 1px solid rgba(241, 196, 15, 0.2); }
-        .t-amt { font-family: 'JetBrains Mono'; font-weight: 500; white-space: nowrap; margin-top: 5px; font-size: 1rem; }
+        .t-desc { font-weight: 600; font-size: 0.95rem; color: #fff; margin-bottom: 4px; line-height: 1.3; }
+        .t-meta { font-size: 0.75rem; color: var(--text-sec); display: flex; gap: 8px; align-items: center; }
+        .tag { padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.6rem; text-transform: uppercase; }
+        .tag.rec { background: rgba(56, 189, 248, 0.15); color: var(--sav); }
+        .tag.proj { border: 1px dashed #666; color: #888; }
+        
+        .t-amt { font-family: 'JetBrains Mono'; font-weight: 600; font-size: 1rem; margin-top: 2px; }
 
         /* WARNING BOX */
         .warning-box {
-            background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); color: #ff6b6b;
-            padding: 12px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; 
-            text-align: center; margin-bottom: 25px; display: none; box-shadow: 0 0 15px rgba(231, 76, 60, 0.1);
+            background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.2); color: var(--exp);
+            padding: 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; 
+            text-align: center; margin-bottom: 25px; display: none;
         }
 
-        /* FORM */
-        .type-switch { display: flex; background: #000; padding: 5px; border-radius: 16px; border: 1px solid var(--border-glass); margin-bottom: 25px; }
-        .type-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #666; font-weight: 600; border-radius: 12px; transition: 0.3s; cursor: pointer; font-size: 0.85rem; }
-        .type-btn.active-exp { background: rgba(231, 76, 60, 0.15); color: var(--exp); }
-        .type-btn.active-inc { background: rgba(46, 204, 113, 0.15); color: var(--inc); }
-        .type-btn.active-inv { background: rgba(241, 196, 15, 0.15); color: var(--inv); }
-
-        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px; }
-        .cat-item {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 16px; padding: 12px;
-            text-align: center; cursor: pointer; transition: 0.2s;
+        /* INPUTS & FORM */
+        input { 
+            width: 100%; background: #000; border: 1px solid #333; color: #fff; 
+            padding: 18px; border-radius: 16px; font-size: 1.1rem; margin-bottom: 15px; 
+            font-family: 'JetBrains Mono'; outline: none; transition: 0.3s; 
         }
-        .cat-item.selected { border-color: #fff; background: rgba(255,255,255,0.1); }
-        .cat-icon { font-size: 1.6rem; display: block; margin-bottom: 5px; }
-        .cat-name { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        input:focus { border-color: var(--sav); }
         
-        input { width: 100%; background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 16px; border-radius: 14px; font-size: 1rem; margin-bottom: 15px; outline: none; transition: 0.3s; }
-        input:focus { border-color: #555; background: #111; }
+        .type-switch { display: flex; background: #000; padding: 4px; border-radius: 16px; border: 1px solid #333; margin-bottom: 25px; }
+        .type-btn { flex: 1; padding: 14px; border: none; background: transparent; color: #666; font-weight: 700; border-radius: 12px; transition: 0.3s; cursor: pointer; }
+        .type-btn.active-exp { background: rgba(248, 113, 113, 0.15); color: var(--exp); }
+        .type-btn.active-inc { background: rgba(74, 222, 128, 0.15); color: var(--inc); }
+        .type-btn.active-inv { background: rgba(250, 204, 21, 0.15); color: var(--inv); }
 
-        .btn-action { width: 100%; padding: 16px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; font-size: 0.95rem; letter-spacing: 0.5px; transition: 0.2s; }
+        .btn-action { width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 700; cursor: pointer; font-size: 1rem; transition: 0.2s; }
         .btn-action:active { transform: scale(0.98); }
         .btn-primary { background: #fff; color: #000; }
-        .btn-danger { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3); margin-top: 15px; }
+        .btn-danger { background: rgba(248, 113, 113, 0.1); color: var(--exp); margin-top: 15px; }
 
-        /* SETTINGS ROWS */
-        .setting-row { background: var(--bg-glass); padding: 25px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border-glass); }
-        .setting-title { font-weight: 600; margin-bottom: 6px; font-size: 1rem; }
-        .setting-desc { font-size: 0.85rem; color: #888; margin-bottom: 18px; line-height: 1.4; }
-
-        /* VISTAS */
-        .view-section { display: none; opacity: 0; transition: opacity 0.2s; }
-        .view-section.active { display: block; opacity: 1; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* NAV - FLOATING & SCROLL HIDE */
+        /* NAVIGATION BAR */
         .bottom-nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-            width: 90%; max-width: 460px;
-            background: rgba(20, 20, 20, 0.85); 
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); 
+            width: 90%; max-width: 420px;
+            background: rgba(20, 20, 20, 0.9); 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 30px;
-            padding: 10px 25px; 
+            border-radius: 100px;
+            padding: 12px 30px; 
             display: flex; justify-content: space-between; align-items: center; 
             z-index: 999;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
         }
+        .bottom-nav.nav-hidden { transform: translate(-50%, 200%); opacity: 0; }
 
-        .bottom-nav.nav-hidden { transform: translate(-50%, 150%); opacity: 0; }
-
-        .nav-btn { background: none; border: none; color: #666; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .nav-btn svg { width: 24px; fill: currentColor; }
+        .nav-btn { background: none; border: none; color: #555; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .nav-btn svg { width: 24px; fill: currentColor; transition: 0.3s; }
         .nav-btn.active { color: #fff; }
-        .nav-btn.active svg { fill: #fff; filter: drop-shadow(0 0 8px rgba(255,255,255,0.5)); }
-
-        .add-fab {
-            width: 55px; height: 55px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; color: #000; box-shadow: 0 0 25px rgba(255,255,255,0.3); transform: translateY(-25px); border: none; cursor: pointer; margin: 0 5px;
-            transition: 0.2s;
-        }
-        .add-fab:active { transform: translateY(-25px) scale(0.9); }
-
-        /* MODAL */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: flex-end; }
-        .modal-overlay.open { display: flex; }
-        .modal-sheet { background: #161616; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 30px 30px 0 0; padding: 30px 25px; border-top: 1px solid #333; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        .alert-box {
-            background: #1c1c1c; padding: 30px; border-radius: 25px; text-align: center; width: 85%; max-width: 320px; border: 1px solid #333; 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        .add-fab {
+            width: 56px; height: 56px; background: #fff; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.25); 
+            transform: translateY(-20px); border: none; cursor: pointer; 
+            transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .alert-btn { width: 100%; padding: 14px; border-radius: 12px; border:none; font-weight:600; margin-top:10px; cursor:pointer;}
-        .btn-cal { background: #4285F4; color:white; }
-        .btn-cancel { background: #333; color:#aaa; }
+        .add-fab:active { transform: translateY(-20px) scale(0.9); }
+
+        /* VISTAS & MODALES */
+        .view-section { display: none; opacity: 0; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: flex-end; }
+        .modal-overlay.open { display: flex; }
+        .modal-sheet { background: #111; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 30px 30px 0 0; padding: 30px 25px; border-top: 1px solid #333; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         /* ANALYTICS */
-        .segment-bar { display: flex; background: #111; padding: 5px; border-radius: 16px; border: 1px solid var(--border-glass); margin-bottom: 25px; }
-        .seg-btn { flex: 1; background: none; border: none; color: #666; padding: 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .segment-bar { display: flex; background: #111; padding: 4px; border-radius: 100px; border: 1px solid #222; margin-bottom: 25px; }
+        .seg-btn { flex: 1; background: none; border: none; color: #666; padding: 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .seg-btn.active { background: #222; color: #fff; }
-        .chart-container { height: 250px; margin: 10px 0; }
+        .kpi-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .kpi-card { background: #111; border: 1px solid #222; padding: 15px 10px; border-radius: 16px; text-align: center; }
+        .kpi-val { font-family: 'JetBrains Mono'; font-size: 0.9rem; font-weight: 700; margin-top: 5px; }
+        .kpi-title { font-size: 0.6rem; color: #666; text-transform: uppercase; font-weight: 700; }
+        .chart-box { background: #111; border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 20px; }
+        .chart-container { height: 220px; }
+
+        /* CAT GRID */
+        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .cat-item { background: #181818; border: 1px solid #222; border-radius: 16px; padding: 15px 10px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .cat-item.selected { border-color: #fff; background: #222; }
+        .cat-icon { font-size: 1.6rem; display: block; margin-bottom: 8px; }
+        .cat-name { font-size: 0.65rem; color: #888; font-weight: 700; text-transform: uppercase; }
+        
+        .alert-box { background: #1c1c1c; padding: 30px; border-radius: 25px; text-align: center; width: 85%; max-width: 320px; border: 1px solid #333; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <div class="logo">A2C v9.0</div>
+            <div class="logo">A2C v10.0</div>
         </header>
 
         <div id="view-home" class="view-section active">
             <div class="month-nav">
-                <button class="nav-arrow" onclick="changeMonth(-1)">&#8249;</button>
+                <button class="nav-arrow" onclick="vib(); changeMonth(-1)">&#8249;</button>
                 <span class="current-month-label" id="month-display">...</span>
-                <button class="nav-arrow" onclick="changeMonth(1)">&#8250;</button>
+                <button class="nav-arrow" onclick="vib(); changeMonth(1)">&#8250;</button>
             </div>
 
             <div class="smart-card">
                 <div class="label">Balance Mensual</div>
-                <div class="main-balance blur-sens" id="main-balance">0.00€</div>
+                <div class="main-balance blur-sens" id="main-balance">0.00</div>
             </div>
 
             <div id="warning-msg" class="warning-box"></div>
 
             <div class="portfolio-row">
                 <div class="port-card">
-                    <div class="port-label" style="color:var(--sav)">Ahorro Total</div>
+                    <div class="port-label">Patrimonio Neto</div>
                     <div class="port-val blur-sens" id="total-savings" style="color:var(--sav)">0€</div>
-                    <div class="port-icon">🐷</div>
+                    <div class="port-icon">🏛️</div>
                 </div>
                 <div class="port-card">
-                    <div class="port-label" style="color:var(--inv)">Inversiones</div>
+                    <div class="port-label">Inversiones</div>
                     <div class="port-val blur-sens" id="total-invest" style="color:var(--inv)">0€</div>
                     <div class="port-icon">📈</div>
                 </div>
             </div>
 
-            <div class="safe-spend-box">
-                <div class="mini-card">
-                    <div class="label" style="color:var(--inc)">Ingresos (Mes)</div>
-                    <div class="mini-val blur-sens" id="val-inc" style="color:var(--inc)">+0€</div>
+            <div class="month-stats">
+                <div class="stat-pill">
+                    <span style="font-size:0.7rem; color:#888"><span class="dot" style="background:var(--inc)"></span>INGRESOS</span>
+                    <span class="stat-val blur-sens" id="val-inc" style="color:var(--inc)">0</span>
                 </div>
-                <div class="mini-card">
-                    <div class="label" style="color:var(--exp)">Gastos (Mes)</div>
-                    <div class="mini-val blur-sens" id="val-exp" style="color:var(--exp)">-0€</div>
+                <div class="stat-pill">
+                    <span style="font-size:0.7rem; color:#888"><span class="dot" style="background:var(--exp)"></span>GASTOS</span>
+                    <span class="stat-val blur-sens" id="val-exp" style="color:var(--text-main)">0</span>
                 </div>
             </div>
 
-            <input type="text" class="search-bar" id="search-input" placeholder="🔍 Buscar movimiento..." onkeyup="renderList()">
+            <input type="text" class="search-bar" id="search-input" placeholder="🔍 Buscar transacción..." onkeyup="renderList()">
             
-            <div class="label" style="margin-bottom:15px; margin-left: 5px;">Movimientos del Mes</div>
+            <div class="label" style="margin-bottom:15px; margin-left: 5px;">ACTIVIDAD</div>
             <div id="transactions-list" class="t-list"></div>
         </div>
 
@@ -285,16 +287,16 @@
             <div class="label" style="margin-bottom:15px; font-size:1rem;">Analíticas</div>
             
             <div class="segment-bar">
-                <button class="seg-btn" id="seg-day" onclick="setAnalyticsSegment('day')">Día</button>
-                <button class="seg-btn" id="seg-week" onclick="setAnalyticsSegment('week')">Sem</button>
-                <button class="seg-btn active" id="seg-month" onclick="setAnalyticsSegment('month')">Mes</button>
-                <button class="seg-btn" id="seg-year" onclick="setAnalyticsSegment('year')">Año</button>
+                <button class="seg-btn" id="seg-day" onclick="vib(); setAnalyticsSegment('day')">Día</button>
+                <button class="seg-btn" id="seg-week" onclick="vib(); setAnalyticsSegment('week')">Sem</button>
+                <button class="seg-btn active" id="seg-month" onclick="vib(); setAnalyticsSegment('month')">Mes</button>
+                <button class="seg-btn" id="seg-year" onclick="vib(); setAnalyticsSegment('year')">Año</button>
             </div>
 
             <div class="kpi-row">
                 <div class="kpi-card">
                     <div class="kpi-title">Tasa Ahorro</div>
-                    <div class="kpi-val" id="kpi-rate" style="color:var(--sav)">0%</div>
+                    <div class="kpi-val" id="kpi-rate" style="color:var(--inc)">0%</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-title">Cash Flow</div>
@@ -307,59 +309,49 @@
             </div>
 
             <div class="chart-box">
-                <div class="chart-header">
-                    <div class="chart-title">FLUJO DE CAJA (Ingresos vs Gastos)</div>
-                </div>
+                <div class="label" style="margin-bottom:15px">Flujo de Caja</div>
                 <div class="chart-container"><canvas id="flowChart"></canvas></div>
             </div>
 
             <div class="chart-box">
-                <div class="chart-header">
-                    <div class="chart-title">GASTO POR CATEGORÍA</div>
-                </div>
+                <div class="label" style="margin-bottom:15px">Top Gastos</div>
                 <div class="chart-container"><canvas id="catChart"></canvas></div>
             </div>
-
-             <div class="chart-box">
-                <div class="chart-header">
-                    <div class="chart-title">DESTINO DEL DINERO</div>
-                </div>
+            
+            <div class="chart-box">
+                <div class="label" style="margin-bottom:15px">Destino del Dinero</div>
                 <div class="chart-container"><canvas id="assetChart"></canvas></div>
             </div>
         </div>
 
         <div id="view-settings" class="view-section">
             <div class="label" style="margin-bottom:15px; font-size:1rem;">Ajustes</div>
-            
             <div class="setting-row">
-                <div class="setting-title">Copia de Seguridad</div>
-                <div class="setting-desc">Guarda tus datos en un archivo para no perderlos, o carga una copia anterior.</div>
-                <div style="display:flex; gap:10px; margin-top:15px">
-                    <button class="btn-action btn-primary" onclick="exportData()">⬇️ Guardar</button>
-                    <button class="btn-action" style="background:rgba(255,255,255,0.1); color:#fff" onclick="document.getElementById('import-file').click()">⬆️ Restaurar</button>
+                <div class="setting-title">Datos</div>
+                <div class="setting-desc">Gestiona tus copias de seguridad.</div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-action btn-primary" onclick="vib(); exportData()">⬇️ Backup</button>
+                    <button class="btn-action" style="background:#222; color:#fff" onclick="vib(); document.getElementById('import-file').click()">⬆️ Restaurar</button>
                     <input type="file" id="import-file" style="display:none" onchange="importData(this)">
                 </div>
             </div>
-
-            <div class="setting-row" style="margin-top:20px; border-color:#222; opacity:0.6">
-                 <div class="setting-title" style="color:#666; font-size:0.75rem">ZONA TÉCNICA</div>
-                 <div class="setting-desc">A2C FINANCIAL v9.0 ANALYTICS</div>
+            <div class="setting-row" style="margin-top:20px; border-color:#222; opacity:0.5; text-align:center">
+                 <div class="setting-title" style="color:#666; font-size:0.75rem">A2C FINANCIAL v10.0</div>
             </div>
         </div>
-
     </div>
 
     <nav class="bottom-nav" id="main-nav">
-        <button class="nav-btn active" id="nav-home" onclick="switchView('home')">
+        <button class="nav-btn active" id="nav-home" onclick="vib(); switchView('home')">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Inicio</span>
         </button>
-        <button class="nav-btn" id="nav-analytics" onclick="switchView('analytics')">
+        <button class="nav-btn" id="nav-analytics" onclick="vib(); switchView('analytics')">
             <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
             <span>Data</span>
         </button>
-        <button class="add-fab" onclick="openForm()">+</button>
-        <button class="nav-btn" id="nav-settings" onclick="switchView('settings')">
+        <button class="add-fab" onclick="vib(); openForm()">+</button>
+        <button class="nav-btn" id="nav-settings" onclick="vib(); switchView('settings')">
             <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
             <span>Ajustes</span>
         </button>
@@ -367,15 +359,15 @@
 
     <div class="modal-overlay" id="form-modal" onclick="if(event.target===this) closeModal()">
         <div class="modal-sheet">
-            <div id="form-title" style="text-align:center; margin-bottom:20px; color:#555; font-weight:700; letter-spacing:1px">TRANSACCIÓN</div>
+            <div id="form-title" style="text-align:center; margin-bottom:20px; color:#555; font-weight:800; letter-spacing:1px">TRANSACCIÓN</div>
             
             <div class="type-switch">
-                <button id="btn-type-exp" class="type-btn active-exp" onclick="setType('expense')">Gasto</button>
-                <button id="btn-type-inc" class="type-btn" onclick="setType('income')">Ingreso</button>
-                <button id="btn-type-inv" class="type-btn" onclick="setType('investment')">Inversión</button>
+                <button id="btn-type-exp" class="type-btn active-exp" onclick="vib(); setType('expense')">Gasto</button>
+                <button id="btn-type-inc" class="type-btn" onclick="vib(); setType('income')">Ingreso</button>
+                <button id="btn-type-inv" class="type-btn" onclick="vib(); setType('investment')">Inversión</button>
             </div>
 
-            <input type="text" id="inp-desc" placeholder="Concepto (ej. SP500, Nómina)" required>
+            <input type="text" id="inp-desc" placeholder="Concepto (ej. Netflix, Nómina)" required>
             <div style="display:flex; gap:10px">
                 <input type="number" id="inp-amt" placeholder="0.00" step="0.01" style="flex:1" required>
                 <input type="date" id="inp-date" style="flex:1" required>
@@ -384,13 +376,13 @@
             <div class="label" style="margin:10px 0 5px">Categoría</div>
             <div class="cat-grid" id="cat-grid"></div>
 
-            <div style="display:flex; align-items:center; gap:10px; margin:20px 0; background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border:1px solid var(--border-glass)">
-                <input type="checkbox" id="inp-rec" style="width:20px; height:20px; margin:0; accent-color:var(--neon-rec)">
-                <label for="inp-rec" style="font-size:0.9rem; color:#aaa">Fijo / Recurrente</label>
+            <div style="display:flex; align-items:center; gap:10px; margin:20px 0; background:#181818; padding:15px; border-radius:12px; border:1px solid #222">
+                <input type="checkbox" id="inp-rec" style="width:20px; height:20px; margin:0; accent-color:var(--sav)">
+                <label for="inp-rec" style="font-size:0.9rem; color:#aaa">Pago Fijo / Recurrente</label>
             </div>
 
-            <button class="btn-action btn-primary" onclick="saveTransaction()">GUARDAR</button>
-            <button id="btn-delete-tr" class="btn-action btn-danger" style="display:none" onclick="deleteTr()">ELIMINAR</button>
+            <button class="btn-action btn-primary" onclick="vib(); saveTransaction()">GUARDAR</button>
+            <button id="btn-delete-tr" class="btn-action btn-danger" style="display:none" onclick="vib(); deleteTr()">ELIMINAR</button>
         </div>
     </div>
 
@@ -399,13 +391,16 @@
             <div style="font-size:3rem; margin-bottom:15px;">📅</div>
             <h3 style="margin-bottom:10px; color:#fff;">Programar</h3>
             <p style="color:#aaa; font-size:0.9rem; margin-bottom:20px;" id="cal-text">...</p>
-            <button class="alert-btn btn-cal" id="btn-go-cal">Añadir a Google Calendar</button>
-            <button class="alert-btn btn-cancel" onclick="document.getElementById('cal-overlay').classList.remove('open')">Cancelar</button>
+            <button class="alert-btn btn-cal" id="btn-go-cal" onclick="vib()">Añadir a Google Calendar</button>
+            <button class="alert-btn btn-cancel" onclick="vib(); document.getElementById('cal-overlay').classList.remove('open')">Cancelar</button>
         </div>
     </div>
 
     <script>
-        // --- LOGIC: SCROLL HIDE NAV ---
+        // --- UX UTILS ---
+        function vib() { if(navigator.vibrate) navigator.vibrate(10); }
+        
+        // --- SCROLL NAV ---
         let lastScrollY = window.scrollY;
         const nav = document.getElementById('main-nav');
         window.addEventListener('scroll', () => {
@@ -414,10 +409,10 @@
             lastScrollY = window.scrollY;
         });
 
-        // --- CORE LOGIC ---
+        // --- APP LOGIC ---
         Chart.defaults.color = '#777'; 
-        Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
-        Chart.defaults.font.family = 'Inter';
+        Chart.defaults.borderColor = '#222';
+        Chart.defaults.font.family = 'JetBrains Mono';
         
         const CATS = [
             {id:'food', n:'Comida', i:'🍔'}, {id:'home', n:'Casa', i:'🏠'}, {id:'trans', n:'Transp.', i:'🚗'}, 
@@ -463,27 +458,33 @@
 
             document.getElementById('month-display').innerText = currentViewDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 
-            let globalLiquid = 0; 
-            let globalInvested = 0; 
+            // 1. CALCULATE NET WORTH (TOTAL HISTORY)
+            // Liquid = All Incomes - All Expenses - All Investments
+            // Invested = All Investments
+            let totalLiquid = 0; 
+            let totalInvested = 0; 
 
             db.forEach(t => {
                 if(t.cat === 'invest') {
-                    globalLiquid += t.amt; 
-                    globalInvested += Math.abs(t.amt); 
+                    // Money leaves liquid, goes to invested
+                    totalLiquid += t.amt; // t.amt is negative
+                    totalInvested += Math.abs(t.amt); 
                 } else {
-                    globalLiquid += t.amt;
+                    totalLiquid += t.amt;
                 }
             });
 
-            document.getElementById('total-savings').innerText = fmt(globalLiquid);
-            document.getElementById('total-invest').innerText = fmt(globalInvested);
+            document.getElementById('total-savings').innerText = fmt(totalLiquid);
+            document.getElementById('total-invest').innerText = fmt(totalInvested);
 
+            // 2. MONTHLY CASH FLOW (CURRENT MONTH)
             const visibleData = getMonthlyData(currentViewDate);
             
             const mIncome = visibleData.filter(t=>t.amt>0).reduce((a,b)=>a+b.amt,0);
             const mExpense = visibleData.filter(t=>t.amt<0 && t.cat!=='invest').reduce((a,b)=>a+b.amt,0);
             const mInvest = visibleData.filter(t=>t.cat==='invest').reduce((a,b)=>a+b.amt,0);
             
+            // Balance = What's left in bank account (Income - Exp - Inv)
             const monthBalance = mIncome + mExpense + mInvest;
 
             document.getElementById('main-balance').innerText = fmt(monthBalance);
@@ -491,10 +492,12 @@
             document.getElementById('val-exp').innerText = fmt(mExpense);
 
             const warnBox = document.getElementById('warning-msg');
-            if ((mIncome + mExpense) < 0) {
-                const deficit = Math.abs(mIncome + mExpense);
+            // Alert if Spending > Income (ignoring investments if we want strict cashflow warning, 
+            // but usually warning is for overspending). Here: If Balance < 0 it means we used savings.
+            if (monthBalance < 0) {
+                const deficit = Math.abs(monthBalance);
                 warnBox.style.display = 'block';
-                warnBox.innerText = `⚠️ CUIDADO: Usando Ahorros (-${deficit.toFixed(0)}€)`;
+                warnBox.innerText = `⚠️ Uso de Ahorros (-${deficit.toFixed(0)}€)`;
             } else {
                 warnBox.style.display = 'none';
             }
@@ -511,10 +514,12 @@
                 return d.getMonth() === tM && d.getFullYear() === tY;
             });
 
+            // Projections for UI only
             const projected = [];
             db.forEach(t => {
                 if(t.rec) {
                     const d = new Date(t.date);
+                    // Generate projection if origin is in past
                     if(d < new Date(tY, tM, 1)) {
                         projected.push({
                             ...t,
@@ -533,41 +538,70 @@
             const el = document.getElementById('transactions-list'); el.innerHTML = '';
             const q = document.getElementById('search-input').value.toLowerCase();
             
-            list.filter(t => t.desc.toLowerCase().includes(q)).forEach(t => {
-                const c = CATS.find(x=>x.id===t.cat) || CATS[0];
-                
-                let color = t.amt < 0 ? '#fff' : '#2ecc71';
-                if(t.cat === 'invest') color = '#f1c40f';
+            const filtered = list.filter(t => t.desc.toLowerCase().includes(q));
+            
+            // GROUP BY DATE
+            let lastDate = '';
+            let currentGroup = null;
 
-                const tag = t.isProj ? '<span class="tag" style="background:rgba(255,255,255,0.1);color:#aaa">PROYECTADO</span>' : (t.rec ? '<span class="tag rec">FIJO</span>' : '');
+            filtered.forEach(t => {
+                const tDateStr = new Date(t.date).toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'short'});
+                
+                if(tDateStr !== lastDate) {
+                    // Close prev group if exists
+                    if(currentGroup) el.appendChild(currentGroup);
+                    
+                    // Header
+                    const header = document.createElement('div');
+                    header.className = 'date-header';
+                    
+                    // Smart Labels
+                    const today = new Date().toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'short'});
+                    if(tDateStr === today) header.innerText = 'HOY';
+                    else header.innerText = tDateStr;
+                    
+                    el.appendChild(header);
+
+                    // New Group Container
+                    currentGroup = document.createElement('div');
+                    currentGroup.className = 't-group';
+                    lastDate = tDateStr;
+                }
+
+                // Create Item
+                const c = CATS.find(x=>x.id===t.cat) || CATS[0];
+                let color = t.amt < 0 ? '#fff' : 'var(--inc)';
+                if(t.cat === 'invest') color = 'var(--inv)';
+
+                const tag = t.isProj ? '<span class="tag proj">PROYECTADO</span>' : (t.rec ? '<span class="tag rec">FIJO</span>' : '');
                 const clickFn = `editTr('${t.id}')`;
 
-                el.innerHTML += `
-                <div class="t-item" onclick="${clickFn}" style="${t.isProj ? 'opacity:0.6; border:1px dashed #444':''}">
+                currentGroup.innerHTML += `
+                <div class="t-item" onclick="${clickFn}" style="${t.isProj ? 'opacity:0.6':''}">
                     <div class="t-left">
                         <div class="t-icon">${c.i}</div>
                         <div>
                             <div class="t-desc">${t.desc}</div>
-                            <div class="t-meta">
-                                ${new Date(t.date).toLocaleDateString('es-ES', {day:'numeric', month:'short'})}
-                                ${tag}
-                            </div>
+                            <div class="t-meta">${tag}</div>
                         </div>
                     </div>
                     <div class="t-amt" style="color:${color}">${t.amt>0?'+':''}${t.amt.toFixed(2)}€</div>
                 </div>`;
             });
+            // Append last group
+            if(currentGroup) el.appendChild(currentGroup);
         }
 
         function renderCats() {
             const g = document.getElementById('cat-grid'); g.innerHTML = '';
             CATS.forEach(c => {
-                g.innerHTML += `<div class="cat-item ${c.id===selectedCat?'selected':''}" onclick="selCat('${c.id}')">
+                g.innerHTML += `<div class="cat-item ${c.id===selectedCat?'selected':''}" onclick="vib(); selCat('${c.id}')">
                     <span class="cat-icon">${c.i}</span><span class="cat-name">${c.n}</span>
                 </div>`;
             });
         }
 
+        // --- FORM LOGIC ---
         function openForm() { 
             document.getElementById('form-modal').classList.add('open'); 
             document.getElementById('form-title').innerText = "NUEVA TRANSACCIÓN";
@@ -627,7 +661,7 @@
             if(!t) return;
 
             editingId = id;
-            document.getElementById('form-title').innerText = isProj ? "EDITAR REGLA ORIGINAL" : "EDITAR TRANSACCIÓN";
+            document.getElementById('form-title').innerText = isProj ? "EDITAR REGLA" : "EDITAR TRANSACCIÓN";
             document.getElementById('inp-desc').value = t.desc;
             document.getElementById('inp-amt').value = Math.abs(t.amt);
             document.getElementById('inp-date').value = t.date; 
@@ -639,7 +673,7 @@
             selCat(t.cat);
             
             document.getElementById('btn-delete-tr').style.display = 'block'; 
-            document.getElementById('btn-delete-tr').innerText = isProj ? "ELIMINAR REGLA (Y FUTUROS)" : "ELIMINAR";
+            document.getElementById('btn-delete-tr').innerText = isProj ? "ELIMINAR REGLA Y FUTUROS" : "ELIMINAR";
             
             document.getElementById('form-modal').classList.add('open');
         }
@@ -668,6 +702,7 @@
             document.getElementById('cal-overlay').classList.remove('open');
         });
 
+        // --- BACKUP ---
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
             const node = document.createElement('a');
@@ -688,6 +723,7 @@
             reader.readAsText(file);
         }
 
+        // --- ANALYTICS ENGINE ---
         function setAnalyticsSegment(seg) {
             analyticsSegment = seg;
             document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
@@ -719,21 +755,32 @@
                 return d >= start && d <= end;
             });
 
-            // 1. KPIs
+            // 1. ADVANCED KPIs
+            // Ingresos Totales
             const inc = flt.filter(t=>t.amt>0).reduce((a,b)=>a+b.amt,0);
+            // Gastos de Consumo (Excluye inversión)
             const exp = flt.filter(t=>t.amt<0 && t.cat!=='invest').reduce((a,b)=>a+Math.abs(t.amt),0);
+            // Inversión (Dinero guardado pero no líquido)
             const inv = flt.filter(t=>t.cat==='invest').reduce((a,b)=>a+Math.abs(t.amt),0);
-            const saved = inc - exp;
-            const rate = inc > 0 ? ((saved/inc)*100).toFixed(0) : 0;
-            const count = flt.filter(t=>t.amt<0).length || 1;
+            
+            // CashFlow (Lo que sobra en cuenta)
+            const cashflow = inc - exp - inv;
+            
+            // Dinero realmente "Ahorrado" = CashFlow + Inversión (Es riqueza generada)
+            const wealthGenerated = cashflow + inv;
+            
+            // Tasa de Ahorro: (Riqueza Generada / Ingresos)
+            const rate = inc > 0 ? ((wealthGenerated/inc)*100).toFixed(0) : 0;
+            
+            const count = flt.filter(t=>t.amt<0 && t.cat!=='invest').length || 1;
             const avg = (exp / count).toFixed(0);
 
             document.getElementById('kpi-rate').innerText = `${rate}%`;
-            document.getElementById('kpi-flow').innerText = fmt(saved - inv); // Cashflow neto (tras inversion)
+            document.getElementById('kpi-flow').innerText = fmt(cashflow);
             document.getElementById('kpi-avg').innerText = fmt(avg);
 
             // 2. FLOW CHART
-            const flowData = {}; // Key: Date, Val: {inc, exp}
+            const flowData = {}; 
             flt.forEach(t => {
                 let k = new Date(t.date).getDate();
                 if(analyticsSegment==='year') k = new Date(t.date).getMonth()+1;
@@ -750,8 +797,8 @@
                 data: {
                     labels: flowLabels,
                     datasets: [
-                        { label:'Ingreso', data:flowLabels.map(l=>flowData[l].i), backgroundColor:'#2ecc71', borderRadius:4 },
-                        { label:'Salida', data:flowLabels.map(l=>flowData[l].e), backgroundColor:'#e74c3c', borderRadius:4 }
+                        { label:'Entra', data:flowLabels.map(l=>flowData[l].i), backgroundColor:'#4ADE80', borderRadius:4 },
+                        { label:'Sale', data:flowLabels.map(l=>flowData[l].e), backgroundColor:'#F87171', borderRadius:4 }
                     ]
                 },
                 options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:'#fff'}}}, scales:{x:{grid:{display:false}}, y:{grid:{color:'rgba(255,255,255,0.05)'}}} }
@@ -768,22 +815,23 @@
                     labels: Object.keys(catAmts).map(k=>CATS.find(x=>x.id===k)?.n || k),
                     datasets: [{
                         data: Object.values(catAmts),
-                        backgroundColor: ['#e74c3c','#9b59b6','#3498db','#f39c12','#1abc9c','#ecf0f1'],
+                        backgroundColor: ['#F87171','#A78BFA','#60A5FA','#FBBF24','#34D399','#9CA3AF'],
                         borderWidth: 0
                     }]
                 },
                 options: { maintainAspectRatio:false, plugins:{legend:{position:'right', labels:{color:'#fff', font:{size:10}}}} }
             });
 
-            // 4. ASSET CHART
+            // 4. ASSET CHART (Corrected Calculation)
+            // Gasto = Consumption. Ahorro = Cashflow. Inversion = Invested.
             if(charts.c3) charts.c3.destroy();
             charts.c3 = new Chart(document.getElementById('assetChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Gasto', 'Ahorro', 'Inversión'],
+                    labels: ['Consumo', 'Liquidez', 'Inversión'],
                     datasets: [{
-                        data: [exp, Math.max(0, saved-inv), inv],
-                        backgroundColor: ['#e74c3c','#3498db','#f1c40f'],
+                        data: [exp, Math.max(0, cashflow), inv],
+                        backgroundColor: ['#F87171','#38BDF8','#FACC15'],
                         borderWidth: 0
                     }]
                 },
