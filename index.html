@@ -3,491 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Protector de Imágenes</title>
-
+<title>Protector Profesional de Imágenes</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
+:root{
+  --bg1:#0f172a;--bg2:#1e293b;--card:#fff;--text:#0f172a;--muted:#64748b;
+  --primary:#2563eb;--primary2:#1d4ed8;--green:#16a34a;--danger:#dc2626;
+  --border:#e2e8f0;--soft:#f1f5f9;--shadow:0 20px 55px rgba(0,0,0,.25)
+}
+body.dark{--card:#111827;--text:#f8fafc;--muted:#94a3b8;--border:#334155;--soft:#1f2937}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#0f172a;
-  color:#0f172a;
-}
-.app{
-  max-width:1200px;
-  margin:auto;
-  padding:24px;
-}
-.header{
-  color:white;
-  text-align:center;
-  margin-bottom:24px;
-}
-.header h1{margin:0;font-size:34px}
-.header p{color:#cbd5e1}
-
-.grid{
-  display:grid;
-  grid-template-columns:360px 1fr;
-  gap:20px;
-}
-.card{
-  background:white;
-  border-radius:22px;
-  padding:22px;
-  box-shadow:0 20px 60px rgba(0,0,0,.25);
-}
-label{
-  display:block;
-  margin-top:14px;
-  font-weight:bold;
-}
-input,select,button{
-  width:100%;
-  padding:13px;
-  margin-top:7px;
-  border-radius:12px;
-  border:1px solid #dbe3ef;
-  font-size:15px;
-}
-input[type=range]{padding:0}
-button,.fileBtn{
-  border:0;
-  cursor:pointer;
-  font-weight:bold;
-}
-.fileBtn{
-  display:block;
-  text-align:center;
-  background:#2563eb;
-  color:white;
-  padding:15px;
-  border-radius:14px;
-  margin-top:12px;
-}
-button.primary{background:#2563eb;color:white}
-button.green{background:#16a34a;color:white}
-button.dark{background:#111827;color:white}
-button:disabled{background:#94a3b8;cursor:not-allowed}
-.hidden{display:none}
-
-.drop{
-  border:2px dashed #94a3b8;
-  border-radius:18px;
-  padding:24px;
-  text-align:center;
-  color:#64748b;
-  margin-top:12px;
-}
-.drop.active{
-  background:#eff6ff;
-  border-color:#2563eb;
-}
-.canvasBox{
-  min-height:500px;
-  background:#f1f5f9;
-  border-radius:18px;
-  padding:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:auto;
-}
-canvas{
-  max-width:100%;
-  border-radius:14px;
-  box-shadow:0 15px 40px rgba(0,0,0,.18);
-}
-.small{
-  color:#64748b;
-  font-size:13px;
-  line-height:1.5;
-}
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.value{
-  float:right;
-  color:#64748b;
-  font-weight:normal;
-}
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr}
-  .app{padding:14px}
-}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:var(--text);min-height:100vh}
+.app{max-width:1320px;margin:auto;padding:22px}.header{color:white;text-align:center;margin-bottom:18px}.header h1{margin:0;font-size:34px}.header p{color:#cbd5e1;margin:8px 0 0}.grid{display:grid;grid-template-columns:390px 1fr;gap:18px}.card{background:var(--card);border-radius:22px;padding:20px;box-shadow:var(--shadow)}
+h2{margin:0 0 12px}.tabs{display:flex;gap:8px;margin-bottom:12px}.tab{flex:1;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--soft);cursor:pointer;font-weight:700;color:var(--text)}.tab.active{background:var(--primary);color:white;border-color:var(--primary)}
+.section{border-top:1px solid var(--border);padding-top:12px;margin-top:12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+label{display:block;font-weight:700;font-size:13px;margin-top:11px;color:var(--text)}input,select,textarea,button{width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;font-size:14px;background:var(--card);color:var(--text)}textarea{min-height:74px;resize:vertical}.value{float:right;color:var(--muted);font-weight:500}input[type=range]{padding:0}input[type=color]{height:42px;padding:4px}.hidden{display:none!important}
+.btn,.fileBtn{border:0;font-weight:800;cursor:pointer;text-align:center;display:block}.fileBtn,.primary{background:var(--primary);color:white}.primary:hover{background:var(--primary2)}.green{background:var(--green);color:white}.darkbtn{background:#111827;color:white}.danger{background:var(--danger);color:white}button:disabled{background:#94a3b8;cursor:not-allowed}.small{font-size:12px;color:var(--muted);line-height:1.45}.drop{border:2px dashed #94a3b8;border-radius:18px;padding:22px;text-align:center;color:var(--muted);margin-top:10px}.drop.active{background:#eff6ff;border-color:var(--primary)}
+.previewTop{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}.thumbs{display:flex;gap:8px;overflow:auto;margin-bottom:10px}.thumb{min-width:84px;height:62px;border-radius:10px;border:2px solid transparent;object-fit:cover;cursor:pointer}.thumb.active{border-color:var(--primary)}.canvasBox{min-height:560px;background:var(--soft);border-radius:18px;padding:14px;display:flex;align-items:center;justify-content:center;overflow:auto;position:relative}canvas{max-width:100%;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.18);background:white}.compare{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:12px}.compare div{text-align:center;color:var(--muted);font-size:13px}.compare canvas{width:100%}.pill{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--muted);font-size:12px;margin:4px 4px 0 0}.preset{font-size:12px;padding:9px}.progress{height:10px;background:var(--soft);border-radius:999px;overflow:hidden;margin-top:8px}.bar{height:100%;width:0;background:var(--primary)}
+@media(max-width:980px){.grid{grid-template-columns:1fr}.app{padding:12px}.header h1{font-size:27px}.canvasBox{min-height:380px}}
 </style>
 </head>
-
 <body>
 <div class="app">
-
-  <div class="header">
-    <h1>Protector profesional de imágenes</h1>
-    <p>Marca de agua personalizada, zonas ocultas, protección visual avanzada y descarga segura</p>
-  </div>
-
+  <div class="header"><h1>Protector Profesional de Imágenes</h1><p>Marca de agua, lotes, logo, QR, sellos, zonas ocultas y exportación avanzada</p></div>
   <div class="grid">
-
     <div class="card">
       <h2>Configuración</h2>
+      <label for="imageInput" class="fileBtn">📷 Tomar o seleccionar imágenes</label>
+      <input id="imageInput" class="hidden" type="file" accept="image/*" multiple>
+      <div id="dropZone" class="drop">Arrastra una o varias imágenes aquí</div>
 
-      <label for="imageInput" class="fileBtn">📷 Tomar o seleccionar imagen</label>
-      <input id="imageInput" class="hidden" type="file" accept="image/*">
-
-      <div id="dropZone" class="drop">
-        Arrastra y suelta una imagen aquí
+      <div class="section">
+        <label>Texto de marca de agua</label>
+        <textarea id="watermarkText" placeholder="Escribe el texto que quieras proteger..."></textarea>
+        <div class="row3">
+          <button class="preset" data-preset="USO EXCLUSIVO">Uso exclusivo</button>
+          <button class="preset" data-preset="CONFIDENCIAL">Confidencial</button>
+          <button class="preset" data-preset="SOLO VERIFICACIÓN">Verificación</button>
+        </div>
+        <p class="small">Variables: {fecha}, {hora}, {expediente}, {cliente}, {referencia}, {contador}</p>
+        <div class="row"><input id="client" placeholder="Cliente"><input id="caseId" placeholder="Expediente"></div>
+        <div class="row"><input id="reference" placeholder="Referencia"><input id="filePrefix" placeholder="Prefijo archivo"></div>
       </div>
 
-      <label>Texto de marca de agua</label>
-      <input id="watermarkText" type="text" placeholder="Ej: Solo válido para trámite X">
-
-      <label>Tamaño <span id="sizeVal" class="value">34</span></label>
-      <input id="fontSize" type="range" min="14" max="100" value="34">
-
-      <label>Opacidad <span id="opacityVal" class="value">24%</span></label>
-      <input id="opacity" type="range" min="5" max="80" value="24">
-
-      <label>Separación <span id="spacingVal" class="value">210</span></label>
-      <input id="spacing" type="range" min="90" max="500" value="210">
-
-      <label>Rotación <span id="rotationVal" class="value">-30°</span></label>
-      <input id="rotation" type="range" min="-70" max="70" value="-30">
-
-      <label>Color del texto</label>
-      <input id="textColor" type="color" value="#ffffff">
-
-      <label>Estilo de protección</label>
-      <select id="securityLevel">
-        <option value="normal">Normal</option>
-        <option value="advanced" selected>Avanzado</option>
-        <option value="max">Máximo</option>
-      </select>
-
-      <div class="row">
-        <button id="redactBtn" class="dark">⬛ Ocultar zona</button>
-        <button id="clearRedactionsBtn" class="dark">Limpiar zonas</button>
+      <div class="section">
+        <div class="row"><div><label>Tamaño <span id="sizeVal" class="value"></span></label><input id="fontSize" type="range" min="12" max="110" value="34"></div><div><label>Opacidad <span id="opacityVal" class="value"></span></label><input id="opacity" type="range" min="4" max="90" value="24"></div></div>
+        <div class="row"><div><label>Separación <span id="spacingVal" class="value"></span></label><input id="spacing" type="range" min="80" max="620" value="210"></div><div><label>Rotación <span id="rotationVal" class="value"></span></label><input id="rotation" type="range" min="-75" max="75" value="-30"></div></div>
+        <div class="row"><div><label>Color texto</label><input id="textColor" type="color" value="#ffffff"></div><div><label>Color contorno</label><input id="strokeColor" type="color" value="#000000"></div></div>
+        <label>Tipografía</label><select id="fontFamily"><option>Arial</option><option>Verdana</option><option>Georgia</option><option>Courier New</option><option>Times New Roman</option></select>
       </div>
 
-      <button id="downloadPng" class="green" disabled>⬇ Descargar PNG</button>
-      <button id="downloadJpg" class="primary" disabled>⬇ Descargar JPG</button>
+      <div class="section">
+        <label>Logo opcional</label><input id="logoInput" type="file" accept="image/*">
+        <div class="row"><div><label>Tamaño logo <span id="logoSizeVal" class="value"></span></label><input id="logoSize" type="range" min="40" max="300" value="100"></div><div><label>Opacidad logo <span id="logoOpacityVal" class="value"></span></label><input id="logoOpacity" type="range" min="5" max="80" value="20"></div></div>
+      </div>
 
-      <p class="small">
-        Todo se procesa localmente en tu navegador. La imagen no se sube a ningún servidor.
-      </p>
+      <div class="section">
+        <label>QR opcional</label><input id="qrText" placeholder="Texto o URL del QR">
+        <div class="row"><div><label>Tamaño QR <span id="qrSizeVal" class="value"></span></label><input id="qrSize" type="range" min="60" max="260" value="120"></div><div><label>Posición QR</label><select id="qrPos"><option value="none">Sin QR</option><option value="br">Abajo derecha</option><option value="bl">Abajo izquierda</option><option value="tr">Arriba derecha</option><option value="tl">Arriba izquierda</option></select></div></div>
+      </div>
+
+      <div class="section">
+        <label>Protección visual</label><select id="securityLevel"><option value="normal">Normal</option><option value="advanced" selected>Avanzada</option><option value="max">Máxima</option></select>
+        <div class="row"><button id="redactBtn" class="darkbtn">⬛ Ocultar zona</button><button id="clearRedactionsBtn" class="darkbtn">Limpiar zonas</button></div>
+        <div class="row"><button id="geoBtn" class="darkbtn">📍 Añadir ubicación</button><button id="themeBtn" class="darkbtn">🌙 Modo oscuro</button></div>
+      </div>
+
+      <div class="section">
+        <label>Exportación</label><select id="format"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WEBP</option></select>
+        <div class="row"><button id="downloadOne" class="green" disabled>⬇ Descargar actual</button><button id="downloadZip" class="primary" disabled>📦 Descargar ZIP</button></div>
+        <div class="progress"><div id="bar" class="bar"></div></div>
+        <p class="small" id="status">Todo se procesa localmente en tu navegador.</p>
+      </div>
     </div>
 
     <div class="card">
-      <h2>Vista previa</h2>
+      <div class="previewTop"><h2>Vista previa</h2><button id="compareBtn" class="primary" style="max-width:190px">Antes / Después</button></div>
+      <div id="thumbs" class="thumbs"></div>
       <div class="canvasBox">
-        <canvas id="canvas" class="hidden"></canvas>
         <p id="emptyText" class="small">Selecciona una imagen para empezar.</p>
+        <canvas id="canvas" class="hidden"></canvas>
+        <div id="compareBox" class="compare hidden"><div>Original<canvas id="originalCanvas"></canvas></div><div>Protegida<canvas id="processedCanvas"></canvas></div></div>
       </div>
-      <p class="small">
-        Para ocultar información: pulsa “Ocultar zona” y luego dibuja un rectángulo sobre la imagen.
-      </p>
+      <p class="small">Para ocultar una zona: pulsa “Ocultar zona” y dibuja un rectángulo sobre la imagen.</p>
+      <div id="badges"></div>
     </div>
-
   </div>
 </div>
-
+<div id="qrHidden" class="hidden"></div>
 <script>
-const imageInput = document.getElementById("imageInput");
-const dropZone = document.getElementById("dropZone");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const emptyText = document.getElementById("emptyText");
-
-const watermarkText = document.getElementById("watermarkText");
-const fontSize = document.getElementById("fontSize");
-const opacity = document.getElementById("opacity");
-const spacing = document.getElementById("spacing");
-const rotation = document.getElementById("rotation");
-const textColor = document.getElementById("textColor");
-const securityLevel = document.getElementById("securityLevel");
-
-const sizeVal = document.getElementById("sizeVal");
-const opacityVal = document.getElementById("opacityVal");
-const spacingVal = document.getElementById("spacingVal");
-const rotationVal = document.getElementById("rotationVal");
-
-const downloadPng = document.getElementById("downloadPng");
-const downloadJpg = document.getElementById("downloadJpg");
-const redactBtn = document.getElementById("redactBtn");
-const clearRedactionsBtn = document.getElementById("clearRedactionsBtn");
-
-let originalImage = null;
-let redactions = [];
-let redactMode = false;
-let drawing = false;
-let startX = 0;
-let startY = 0;
-let tempRect = null;
-
-imageInput.addEventListener("change", e => {
-  if(e.target.files[0]) loadFile(e.target.files[0]);
-});
-
-dropZone.addEventListener("dragover", e => {
-  e.preventDefault();
-  dropZone.classList.add("active");
-});
-
-dropZone.addEventListener("dragleave", () => {
-  dropZone.classList.remove("active");
-});
-
-dropZone.addEventListener("drop", e => {
-  e.preventDefault();
-  dropZone.classList.remove("active");
-  if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
-});
-
-function loadFile(file){
-  if(!file.type.startsWith("image/")){
-    alert("Selecciona una imagen válida.");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-      originalImage = img;
-      redactions = [];
-      canvas.width = img.width;
-      canvas.height = img.height;
-      canvas.classList.remove("hidden");
-      emptyText.classList.add("hidden");
-      downloadPng.disabled = false;
-      downloadJpg.disabled = false;
-      draw();
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-[
-  watermarkText,fontSize,opacity,spacing,rotation,textColor,securityLevel
-].forEach(el => el.addEventListener("input", draw));
-
-function draw(){
-  updateLabels();
-  if(!originalImage) return;
-
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(originalImage,0,0);
-
-  drawRedactions();
-  drawWatermark();
-
-  if(tempRect){
-    ctx.save();
-    ctx.fillStyle = "rgba(0,0,0,.45)";
-    ctx.fillRect(tempRect.x,tempRect.y,tempRect.w,tempRect.h);
-    ctx.restore();
-  }
-}
-
-function updateLabels(){
-  sizeVal.textContent = fontSize.value;
-  opacityVal.textContent = opacity.value + "%";
-  spacingVal.textContent = spacing.value;
-  rotationVal.textContent = rotation.value + "°";
-}
-
-function drawWatermark(){
-  const text = watermarkText.value.trim();
-  if(!text) return;
-
-  const fs = Number(fontSize.value);
-  const op = Number(opacity.value) / 100;
-  const gap = Number(spacing.value);
-  const angle = Number(rotation.value) * Math.PI / 180;
-  const color = hexToRgb(textColor.value);
-
-  ctx.save();
-  ctx.font = `800 ${fs}px Arial`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.lineWidth = Math.max(1, fs * .07);
-
-  ctx.translate(canvas.width/2, canvas.height/2);
-  ctx.rotate(angle);
-
-  const diagonal = Math.sqrt(canvas.width**2 + canvas.height**2);
-
-  for(let x=-diagonal; x<diagonal; x+=gap){
-    for(let y=-diagonal; y<diagonal; y+=gap){
-      const waveX = x + Math.sin(y * 0.015) * 12;
-      const waveY = y + Math.cos(x * 0.015) * 12;
-
-      ctx.strokeStyle = `rgba(0,0,0,${op*.75})`;
-      ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${op})`;
-
-      drawMultiline(text,waveX,waveY,gap*1.6,fs*1.25);
-    }
-  }
-
-  ctx.restore();
-
-  if(securityLevel.value !== "normal") drawSecurityLines(op);
-  if(securityLevel.value === "max") drawNoise(op);
-}
-
-function drawMultiline(text,x,y,maxWidth,lineHeight){
-  const words = text.split(" ");
-  const lines = [];
-  let line = "";
-
-  for(const word of words){
-    const test = line + word + " ";
-    if(ctx.measureText(test).width > maxWidth && line){
-      lines.push(line.trim());
-      line = word + " ";
-    }else{
-      line = test;
-    }
-  }
-
-  lines.push(line.trim());
-
-  const startY = y - ((lines.length-1)*lineHeight)/2;
-
-  lines.forEach((l,i)=>{
-    ctx.strokeText(l,x,startY+i*lineHeight);
-    ctx.fillText(l,x,startY+i*lineHeight);
-  });
-}
-
-function drawSecurityLines(op){
-  ctx.save();
-  ctx.globalAlpha = Math.min(.18, op);
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = 1;
-
-  for(let y=0; y<canvas.height; y+=28){
-    ctx.beginPath();
-    for(let x=0; x<canvas.width; x+=20){
-      const wave = Math.sin(x*.025 + y*.01) * 9;
-      if(x===0) ctx.moveTo(x,y+wave);
-      else ctx.lineTo(x,y+wave);
-    }
-    ctx.stroke();
-  }
-
-  ctx.restore();
-}
-
-function drawNoise(op){
-  ctx.save();
-  ctx.globalAlpha = Math.min(.12, op);
-  for(let i=0; i<canvas.width*canvas.height/900; i++){
-    const x = Math.random()*canvas.width;
-    const y = Math.random()*canvas.height;
-    const r = Math.random()*2+1;
-    ctx.fillStyle = Math.random()>.5 ? "#fff" : "#000";
-    ctx.beginPath();
-    ctx.arc(x,y,r,0,Math.PI*2);
-    ctx.fill();
-  }
-  ctx.restore();
-}
-
-function drawRedactions(){
-  ctx.save();
-  ctx.fillStyle = "#000";
-  redactions.forEach(r => ctx.fillRect(r.x,r.y,r.w,r.h));
-  ctx.restore();
-}
-
-redactBtn.addEventListener("click",()=>{
-  redactMode = !redactMode;
-  redactBtn.textContent = redactMode ? "✅ Modo ocultar activo" : "⬛ Ocultar zona";
-});
-
-clearRedactionsBtn.addEventListener("click",()=>{
-  redactions = [];
-  draw();
-});
-
-canvas.addEventListener("mousedown", startDraw);
-canvas.addEventListener("mousemove", moveDraw);
-canvas.addEventListener("mouseup", endDraw);
-
-canvas.addEventListener("touchstart", e => {
-  e.preventDefault();
-  startDraw(e.touches[0]);
-});
-
-canvas.addEventListener("touchmove", e => {
-  e.preventDefault();
-  moveDraw(e.touches[0]);
-});
-
-canvas.addEventListener("touchend", e => {
-  e.preventDefault();
-  endDraw();
-});
-
-function getCanvasPoint(e){
-  const rect = canvas.getBoundingClientRect();
-  return {
-    x:(e.clientX-rect.left) * (canvas.width/rect.width),
-    y:(e.clientY-rect.top) * (canvas.height/rect.height)
-  };
-}
-
-function startDraw(e){
-  if(!redactMode || !originalImage) return;
-  drawing = true;
-  const p = getCanvasPoint(e);
-  startX = p.x;
-  startY = p.y;
-}
-
-function moveDraw(e){
-  if(!drawing) return;
-  const p = getCanvasPoint(e);
-  tempRect = {
-    x:Math.min(startX,p.x),
-    y:Math.min(startY,p.y),
-    w:Math.abs(p.x-startX),
-    h:Math.abs(p.y-startY)
-  };
-  draw();
-}
-
-function endDraw(){
-  if(!drawing || !tempRect) return;
-  redactions.push(tempRect);
-  tempRect = null;
-  drawing = false;
-  draw();
-}
-
-function download(type){
-  const link = document.createElement("a");
-  link.download = type === "image/jpeg"
-    ? "imagen-protegida.jpg"
-    : "imagen-protegida.png";
-  link.href = canvas.toDataURL(type, .95);
-  link.click();
-}
-
-downloadPng.addEventListener("click",()=>download("image/png"));
-downloadJpg.addEventListener("click",()=>download("image/jpeg"));
-
-function hexToRgb(hex){
-  const clean = hex.replace("#","");
-  return {
-    r:parseInt(clean.substring(0,2),16),
-    g:parseInt(clean.substring(2,4),16),
-    b:parseInt(clean.substring(4,6),16)
-  };
-}
+const $=id=>document.getElementById(id);const canvas=$('canvas'),ctx=canvas.getContext('2d'),originalCanvas=$('originalCanvas'),processedCanvas=$('processedCanvas');
+let images=[],current=0,originalImage=null,logoImg=null,redactions={},redactMode=false,drawing=false,startX=0,startY=0,tempRect=null,geoText='',compare=false;
+const controls=['watermarkText','client','caseId','reference','filePrefix','fontSize','opacity','spacing','rotation','textColor','strokeColor','fontFamily','logoSize','logoOpacity','qrText','qrSize','qrPos','securityLevel','format'];
+$('imageInput').onchange=e=>loadFiles([...e.target.files]);$('logoInput').onchange=e=>loadLogo(e.target.files[0]);
+const drop=$('dropZone');drop.ondragover=e=>{e.preventDefault();drop.classList.add('active')};drop.ondragleave=()=>drop.classList.remove('active');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('active');loadFiles([...e.dataTransfer.files])};
+controls.forEach(id=>$(id).addEventListener('input',()=>{saveSettings();draw()}));document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>{$('watermarkText').value=b.dataset.preset+' {fecha} {expediente}';draw();saveSettings()});
+$('themeBtn').onclick=()=>{document.body.classList.toggle('dark');localStorage.setItem('wm_dark',document.body.classList.contains('dark'))};if(localStorage.getItem('wm_dark')==='true')document.body.classList.add('dark');
+$('geoBtn').onclick=()=>{if(!navigator.geolocation){alert('Geolocalización no disponible');return}navigator.geolocation.getCurrentPosition(p=>{geoText=`GPS ${p.coords.latitude.toFixed(5)}, ${p.coords.longitude.toFixed(5)}`;draw()},()=>alert('No se pudo obtener la ubicación'))};
+$('compareBtn').onclick=()=>{compare=!compare;draw()};$('redactBtn').onclick=()=>{redactMode=!redactMode;$('redactBtn').textContent=redactMode?'✅ Ocultar activo':'⬛ Ocultar zona'};$('clearRedactionsBtn').onclick=()=>{redactions[current]=[];draw()};
+$('downloadOne').onclick=()=>downloadCurrent();$('downloadZip').onclick=()=>downloadZip();
+function saveSettings(){const s={};controls.forEach(id=>s[id]=$(id).value);localStorage.setItem('wm_settings',JSON.stringify(s))}function loadSettings(){try{const s=JSON.parse(localStorage.getItem('wm_settings')||'{}');Object.keys(s).forEach(k=>{if($(k))$(k).value=s[k]})}catch(e){}}loadSettings();
+function loadFiles(files){files=files.filter(f=>f.type.startsWith('image/'));if(!files.length)return alert('Selecciona imágenes válidas.');images=[];redactions={};let pending=files.length;files.forEach((file,i)=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{images[i]={img,file,name:file.name};if(--pending===0){current=0;selectImage(0);renderThumbs();$('downloadOne').disabled=false;$('downloadZip').disabled=images.length<1}};img.src=e.target.result};r.readAsDataURL(file)})}
+function loadLogo(file){if(!file)return;const r=new FileReader();r.onload=e=>{logoImg=new Image();logoImg.onload=draw;logoImg.src=e.target.result};r.readAsDataURL(file)}
+function renderThumbs(){const box=$('thumbs');box.innerHTML='';images.forEach((it,i)=>{const im=document.createElement('img');im.src=it.img.src;im.className='thumb'+(i===current?' active':'');im.onclick=()=>selectImage(i);box.appendChild(im)});updateBadges()}
+function selectImage(i){current=i;originalImage=images[i].img;canvas.width=originalImage.width;canvas.height=originalImage.height;$('emptyText').classList.add('hidden');canvas.classList.remove('hidden');renderThumbs();draw()}
+function updateBadges(){const b=$('badges');b.innerHTML=`<span class="pill">${images.length} imagen(es)</span><span class="pill">Procesamiento local</span><span class="pill">ZIP / PNG / JPG / WEBP</span>`}
+function labels(){$('sizeVal').textContent=$('fontSize').value;$('opacityVal').textContent=$('opacity').value+'%';$('spacingVal').textContent=$('spacing').value;$('rotationVal').textContent=$('rotation').value+'°';$('logoSizeVal').textContent=$('logoSize').value;$('logoOpacityVal').textContent=$('logoOpacity').value+'%';$('qrSizeVal').textContent=$('qrSize').value}
+function resolveText(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return $('watermarkText').value.replaceAll('{fecha}',`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`).replaceAll('{hora}',`${pad(d.getHours())}:${pad(d.getMinutes())}`).replaceAll('{cliente}',$('client').value).replaceAll('{expediente}',$('caseId').value).replaceAll('{referencia}',$('reference').value).replaceAll('{contador}',String(current+1).padStart(3,'0'))}
+function draw(targetCanvas=canvas,targetCtx=ctx,img=originalImage,index=current){labels();if(!img)return;targetCanvas.width=img.width;targetCanvas.height=img.height;targetCtx.clearRect(0,0,targetCanvas.width,targetCanvas.height);targetCtx.drawImage(img,0,0);drawRedactions(targetCtx,index);drawWatermark(targetCtx,targetCanvas,index);drawSignature(targetCtx,targetCanvas);drawQR(targetCtx,targetCanvas);if(tempRect&&targetCanvas===canvas){targetCtx.fillStyle='rgba(0,0,0,.45)';targetCtx.fillRect(tempRect.x,tempRect.y,tempRect.w,tempRect.h)}if(compare&&targetCanvas===canvas)drawCompare();else{$('compareBox').classList.add('hidden');canvas.classList.remove('hidden')}}
+function drawWatermark(c,can,index){const text=resolveText().trim();const hasLogo=!!logoImg;if(!text&&!hasLogo)return;const fs=+$('fontSize').value,op=+$('opacity').value/100,gap=+$('spacing').value,angle=+$('rotation').value*Math.PI/180,rgb=hexToRgb($('textColor').value),srgb=hexToRgb($('strokeColor').value);c.save();c.font=`800 ${fs}px ${$('fontFamily').value}`;c.textAlign='center';c.textBaseline='middle';c.lineWidth=Math.max(1,fs*.07);c.translate(can.width/2,can.height/2);c.rotate(angle);const diag=Math.sqrt(can.width**2+can.height**2);for(let x=-diag;x<diag;x+=gap){for(let y=-diag;y<diag;y+=gap){const wx=x+Math.sin(y*.015)*12,wy=y+Math.cos(x*.015)*12;c.strokeStyle=`rgba(${srgb.r},${srgb.g},${srgb.b},${op*.75})`;c.fillStyle=`rgba(${rgb.r},${rgb.g},${rgb.b},${op})`;if(text)drawMultiline(c,text,wx,wy,gap*1.65,fs*1.25);if(hasLogo){const s=+$('logoSize').value;c.globalAlpha=+$('logoOpacity').value/100;c.drawImage(logoImg,wx-s/2,wy+s*.35,s,s*(logoImg.height/logoImg.width));c.globalAlpha=1}}}c.restore();if($('securityLevel').value!=='normal')drawLines(c,can,op);if($('securityLevel').value==='max')drawNoise(c,can,op)}
+function drawMultiline(c,text,x,y,maxWidth,lineHeight){const words=text.split(/\s+/),lines=[];let line='';for(const w of words){const t=line+w+' ';if(c.measureText(t).width>maxWidth&&line){lines.push(line.trim());line=w+' '}else line=t}lines.push(line.trim());const sy=y-((lines.length-1)*lineHeight)/2;lines.forEach((l,i)=>{c.strokeText(l,x,sy+i*lineHeight);c.fillText(l,x,sy+i*lineHeight)})}
+function drawLines(c,can,op){c.save();c.globalAlpha=Math.min(.18,op);c.strokeStyle='#fff';c.lineWidth=1;for(let y=0;y<can.height;y+=28){c.beginPath();for(let x=0;x<can.width;x+=20){const w=Math.sin(x*.025+y*.01)*9;if(x===0)c.moveTo(x,y+w);else c.lineTo(x,y+w)}c.stroke()}c.restore()}
+function drawNoise(c,can,op){c.save();c.globalAlpha=Math.min(.12,op);for(let i=0;i<can.width*can.height/900;i++){c.fillStyle=Math.random()>.5?'#fff':'#000';c.fillRect(Math.random()*can.width,Math.random()*can.height,2,2)}c.restore()}
+function drawSignature(c,can){const parts=[];if($('caseId').value)parts.push('Exp: '+$('caseId').value);if($('reference').value)parts.push('Ref: '+$('reference').value);if(geoText)parts.push(geoText);if(!parts.length)return;c.save();c.font=`700 ${Math.max(14,can.width/70)}px Arial`;c.textAlign='left';c.textBaseline='bottom';const txt=parts.join(' · ');const m=18,h=34,w=c.measureText(txt).width+24;c.fillStyle='rgba(0,0,0,.55)';c.fillRect(m,can.height-m-h,w,h);c.fillStyle='white';c.fillText(txt,m+12,can.height-m-9);c.restore()}
+function drawQR(c,can){if($('qrPos').value==='none'||!$('qrText').value.trim()||typeof QRCode==='undefined')return;const size=+$('qrSize').value,box=$('qrHidden');box.innerHTML='';new QRCode(box,{text:$('qrText').value,width:size,height:size,correctLevel:QRCode.CorrectLevel.H});setTimeout(()=>{const q=box.querySelector('canvas');if(!q)return;const m=20;let x=m,y=m;if($('qrPos').value==='br'){x=can.width-size-m;y=can.height-size-m}else if($('qrPos').value==='bl'){x=m;y=can.height-size-m}else if($('qrPos').value==='tr'){x=can.width-size-m;y=m}c.save();c.fillStyle='rgba(255,255,255,.85)';c.fillRect(x-8,y-8,size+16,size+16);c.drawImage(q,x,y,size,size);c.restore()},0)}
+function drawRedactions(c,index){c.save();c.fillStyle='#000';(redactions[index]||[]).forEach(r=>c.fillRect(r.x,r.y,r.w,r.h));c.restore()}
+function drawCompare(){originalCanvas.width=originalImage.width;originalCanvas.height=originalImage.height;originalCanvas.getContext('2d').drawImage(originalImage,0,0);draw(processedCanvas,processedCanvas.getContext('2d'),originalImage,current);canvas.classList.add('hidden');$('compareBox').classList.remove('hidden')}
+canvas.onmousedown=start;canvas.onmousemove=move;canvas.onmouseup=end;canvas.ontouchstart=e=>{e.preventDefault();start(e.touches[0])};canvas.ontouchmove=e=>{e.preventDefault();move(e.touches[0])};canvas.ontouchend=e=>{e.preventDefault();end()};
+function point(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height}}function start(e){if(!redactMode||!originalImage)return;drawing=true;const p=point(e);startX=p.x;startY=p.y}function move(e){if(!drawing)return;const p=point(e);tempRect={x:Math.min(startX,p.x),y:Math.min(startY,p.y),w:Math.abs(p.x-startX),h:Math.abs(p.y-startY)};draw()}function end(){if(!drawing||!tempRect)return;(redactions[current] ||= []).push(tempRect);tempRect=null;drawing=false;draw()}
+function ext(){return $('format').value==='image/jpeg'?'jpg':$('format').value==='image/webp'?'webp':'png'}function fileName(i){const base=($('filePrefix').value||$('caseId').value||'imagen-protegida').replace(/[^a-z0-9_-]/gi,'_');return `${base}_${String(i+1).padStart(3,'0')}.${ext()}`}
+function downloadCurrent(){draw();setTimeout(()=>{const a=document.createElement('a');a.download=fileName(current);a.href=canvas.toDataURL($('format').value,.95);a.click()},50)}
+async function downloadZip(){if(typeof JSZip==='undefined')return alert('No se pudo cargar JSZip. Revisa la conexión a internet.');const zip=new JSZip(),tmp=document.createElement('canvas'),tc=tmp.getContext('2d');$('bar').style.width='0%';$('status').textContent='Generando ZIP...';for(let i=0;i<images.length;i++){current=i;originalImage=images[i].img;draw(tmp,tc,originalImage,i);await new Promise(r=>setTimeout(r,80));const data=tmp.toDataURL($('format').value,.95).split(',')[1];zip.file(fileName(i),data,{base64:true});$('bar').style.width=((i+1)/images.length*100)+'%'}const blob=await zip.generateAsync({type:'blob'});const a=document.createElement('a');a.download='imagenes-protegidas.zip';a.href=URL.createObjectURL(blob);a.click();URL.revokeObjectURL(a.href);current=0;selectImage(0);$('status').textContent='ZIP generado correctamente.'}
+function hexToRgb(hex){hex=hex.replace('#','');return{r:parseInt(hex.slice(0,2),16),g:parseInt(hex.slice(2,4),16),b:parseInt(hex.slice(4,6),16)}}labels();
 </script>
 </body>
 </html>
