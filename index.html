@@ -1,252 +1,493 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Marca de Agua Personalizada</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protector de Imágenes</title>
+
 <style>
-:root{
-  --bg:#0f172a; --card:#fff; --text:#0f172a; --muted:#64748b;
-  --primary:#2563eb; --success:#16a34a; --border:#e2e8f0;
-}
 *{box-sizing:border-box}
 body{
-  margin:0; font-family:Inter,Arial,sans-serif;
-  background:linear-gradient(135deg,#0f172a,#1e293b);
-  min-height:100vh; padding:24px; color:var(--text);
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#0f172a;
+  color:#0f172a;
 }
-.app{max-width:1100px;margin:auto}
-.header{text-align:center;color:white;margin-bottom:24px}
-.header h1{margin:0;font-size:32px}
+.app{
+  max-width:1200px;
+  margin:auto;
+  padding:24px;
+}
+.header{
+  color:white;
+  text-align:center;
+  margin-bottom:24px;
+}
+.header h1{margin:0;font-size:34px}
 .header p{color:#cbd5e1}
-.grid{display:grid;grid-template-columns:360px 1fr;gap:20px}
-.panel,.preview{
-  background:var(--card); border-radius:20px; padding:22px;
-  box-shadow:0 20px 50px rgba(0,0,0,.25);
+
+.grid{
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:20px;
 }
-.section-title{font-weight:700;margin-bottom:12px}
-label{display:block;font-size:14px;font-weight:600;margin-top:14px;color:#334155}
-input[type="text"],input[type="range"]{width:100%}
-input[type="text"]{
-  padding:13px;border:1px solid var(--border);border-radius:12px;
-  font-size:15px;margin-top:6px;
+.card{
+  background:white;
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
 }
-input[type="range"]{margin-top:10px}
-.value{float:right;color:var(--muted);font-weight:500}
-.btn{
-  width:100%;border:none;border-radius:14px;padding:15px;margin-top:14px;
-  font-size:16px;font-weight:700;cursor:pointer;transition:.2s;
+label{
+  display:block;
+  margin-top:14px;
+  font-weight:bold;
 }
-.btn-primary{background:var(--primary);color:white}
-.btn-success{background:var(--success);color:white}
-.btn:disabled{background:#94a3b8;cursor:not-allowed}
-.file-input{display:none}
-.canvas-wrap{
-  background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:18px;
-  padding:14px;min-height:420px;display:flex;align-items:center;justify-content:center;
+input,select,button{
+  width:100%;
+  padding:13px;
+  margin-top:7px;
+  border-radius:12px;
+  border:1px solid #dbe3ef;
+  font-size:15px;
+}
+input[type=range]{padding:0}
+button,.fileBtn{
+  border:0;
+  cursor:pointer;
+  font-weight:bold;
+}
+.fileBtn{
+  display:block;
+  text-align:center;
+  background:#2563eb;
+  color:white;
+  padding:15px;
+  border-radius:14px;
+  margin-top:12px;
+}
+button.primary{background:#2563eb;color:white}
+button.green{background:#16a34a;color:white}
+button.dark{background:#111827;color:white}
+button:disabled{background:#94a3b8;cursor:not-allowed}
+.hidden{display:none}
+
+.drop{
+  border:2px dashed #94a3b8;
+  border-radius:18px;
+  padding:24px;
+  text-align:center;
+  color:#64748b;
+  margin-top:12px;
+}
+.drop.active{
+  background:#eff6ff;
+  border-color:#2563eb;
+}
+.canvasBox{
+  min-height:500px;
+  background:#f1f5f9;
+  border-radius:18px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:auto;
 }
 canvas{
-  max-width:100%;border-radius:14px;background:white;
-  box-shadow:0 10px 30px rgba(0,0,0,.12);
+  max-width:100%;
+  border-radius:14px;
+  box-shadow:0 15px 40px rgba(0,0,0,.18);
 }
-.hint{text-align:center;color:var(--muted);padding:40px}
-.small{color:var(--muted);font-size:13px;line-height:1.5}
-@media(max-width:850px){
+.small{
+  color:#64748b;
+  font-size:13px;
+  line-height:1.5;
+}
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.value{
+  float:right;
+  color:#64748b;
+  font-weight:normal;
+}
+@media(max-width:900px){
   .grid{grid-template-columns:1fr}
-  body{padding:14px}
+  .app{padding:14px}
 }
 </style>
 </head>
 
 <body>
 <div class="app">
+
   <div class="header">
-    <h1>Protector de Imágenes</h1>
-    <p>Añade una marca de agua personalizada, profesional y repetida</p>
+    <h1>Protector profesional de imágenes</h1>
+    <p>Marca de agua personalizada, zonas ocultas, protección visual avanzada y descarga segura</p>
   </div>
 
   <div class="grid">
-    <div class="panel">
-      <div class="section-title">Configuración</div>
 
-      <label for="imageInput" class="btn btn-primary">📷 Seleccionar o tomar foto</label>
-      <input class="file-input" type="file" id="imageInput" accept="image/*" />
+    <div class="card">
+      <h2>Configuración</h2>
 
-      <label>Texto de la marca de agua personalizada</label>
-      <input
-        type="text"
-        id="watermarkText"
-        placeholder="Escribe aquí tu marca de agua..."
-        value=""
-      />
+      <label for="imageInput" class="fileBtn">📷 Tomar o seleccionar imagen</label>
+      <input id="imageInput" class="hidden" type="file" accept="image/*">
 
-      <label>Tamaño del texto <span class="value" id="sizeValue">34</span></label>
-      <input type="range" id="fontSize" min="16" max="90" value="34" />
-
-      <label>Opacidad <span class="value" id="opacityValue">22%</span></label>
-      <input type="range" id="opacity" min="5" max="70" value="22" />
-
-      <label>Separación <span class="value" id="spacingValue">220</span></label>
-      <input type="range" id="spacing" min="100" max="500" value="220" />
-
-      <label>Rotación <span class="value" id="rotationValue">-30°</span></label>
-      <input type="range" id="rotation" min="-60" max="60" value="-30" />
-
-      <button id="downloadBtn" class="btn btn-success" disabled>
-        ⬇ Descargar imagen protegida
-      </button>
-
-      <p class="small">La imagen se procesa en tu navegador. No se sube a ningún servidor.</p>
-    </div>
-
-    <div class="preview">
-      <div class="section-title">Vista previa</div>
-      <div class="canvas-wrap">
-        <div id="emptyState" class="hint">
-          Selecciona una imagen y escribe el texto de tu marca de agua.
-        </div>
-        <canvas id="canvas" style="display:none;"></canvas>
+      <div id="dropZone" class="drop">
+        Arrastra y suelta una imagen aquí
       </div>
+
+      <label>Texto de marca de agua</label>
+      <input id="watermarkText" type="text" placeholder="Ej: Solo válido para trámite X">
+
+      <label>Tamaño <span id="sizeVal" class="value">34</span></label>
+      <input id="fontSize" type="range" min="14" max="100" value="34">
+
+      <label>Opacidad <span id="opacityVal" class="value">24%</span></label>
+      <input id="opacity" type="range" min="5" max="80" value="24">
+
+      <label>Separación <span id="spacingVal" class="value">210</span></label>
+      <input id="spacing" type="range" min="90" max="500" value="210">
+
+      <label>Rotación <span id="rotationVal" class="value">-30°</span></label>
+      <input id="rotation" type="range" min="-70" max="70" value="-30">
+
+      <label>Color del texto</label>
+      <input id="textColor" type="color" value="#ffffff">
+
+      <label>Estilo de protección</label>
+      <select id="securityLevel">
+        <option value="normal">Normal</option>
+        <option value="advanced" selected>Avanzado</option>
+        <option value="max">Máximo</option>
+      </select>
+
+      <div class="row">
+        <button id="redactBtn" class="dark">⬛ Ocultar zona</button>
+        <button id="clearRedactionsBtn" class="dark">Limpiar zonas</button>
+      </div>
+
+      <button id="downloadPng" class="green" disabled>⬇ Descargar PNG</button>
+      <button id="downloadJpg" class="primary" disabled>⬇ Descargar JPG</button>
+
+      <p class="small">
+        Todo se procesa localmente en tu navegador. La imagen no se sube a ningún servidor.
+      </p>
     </div>
+
+    <div class="card">
+      <h2>Vista previa</h2>
+      <div class="canvasBox">
+        <canvas id="canvas" class="hidden"></canvas>
+        <p id="emptyText" class="small">Selecciona una imagen para empezar.</p>
+      </div>
+      <p class="small">
+        Para ocultar información: pulsa “Ocultar zona” y luego dibuja un rectángulo sobre la imagen.
+      </p>
+    </div>
+
   </div>
 </div>
 
 <script>
 const imageInput = document.getElementById("imageInput");
+const dropZone = document.getElementById("dropZone");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const emptyState = document.getElementById("emptyState");
+const emptyText = document.getElementById("emptyText");
 
 const watermarkText = document.getElementById("watermarkText");
-const fontSizeInput = document.getElementById("fontSize");
-const opacityInput = document.getElementById("opacity");
-const spacingInput = document.getElementById("spacing");
-const rotationInput = document.getElementById("rotation");
+const fontSize = document.getElementById("fontSize");
+const opacity = document.getElementById("opacity");
+const spacing = document.getElementById("spacing");
+const rotation = document.getElementById("rotation");
+const textColor = document.getElementById("textColor");
+const securityLevel = document.getElementById("securityLevel");
 
-const sizeValue = document.getElementById("sizeValue");
-const opacityValue = document.getElementById("opacityValue");
-const spacingValue = document.getElementById("spacingValue");
-const rotationValue = document.getElementById("rotationValue");
+const sizeVal = document.getElementById("sizeVal");
+const opacityVal = document.getElementById("opacityVal");
+const spacingVal = document.getElementById("spacingVal");
+const rotationVal = document.getElementById("rotationVal");
 
-const downloadBtn = document.getElementById("downloadBtn");
+const downloadPng = document.getElementById("downloadPng");
+const downloadJpg = document.getElementById("downloadJpg");
+const redactBtn = document.getElementById("redactBtn");
+const clearRedactionsBtn = document.getElementById("clearRedactionsBtn");
 
 let originalImage = null;
+let redactions = [];
+let redactMode = false;
+let drawing = false;
+let startX = 0;
+let startY = 0;
+let tempRect = null;
 
-imageInput.addEventListener("change", function(){
-  const file = this.files[0];
-  if(!file) return;
+imageInput.addEventListener("change", e => {
+  if(e.target.files[0]) loadFile(e.target.files[0]);
+});
+
+dropZone.addEventListener("dragover", e => {
+  e.preventDefault();
+  dropZone.classList.add("active");
+});
+
+dropZone.addEventListener("dragleave", () => {
+  dropZone.classList.remove("active");
+});
+
+dropZone.addEventListener("drop", e => {
+  e.preventDefault();
+  dropZone.classList.remove("active");
+  if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+});
+
+function loadFile(file){
+  if(!file.type.startsWith("image/")){
+    alert("Selecciona una imagen válida.");
+    return;
+  }
 
   const reader = new FileReader();
-
-  reader.onload = function(e){
+  reader.onload = e => {
     const img = new Image();
-
-    img.onload = function(){
+    img.onload = () => {
       originalImage = img;
+      redactions = [];
       canvas.width = img.width;
       canvas.height = img.height;
-      canvas.style.display = "block";
-      emptyState.style.display = "none";
-      drawImageWithWatermark();
-      downloadBtn.disabled = false;
+      canvas.classList.remove("hidden");
+      emptyText.classList.add("hidden");
+      downloadPng.disabled = false;
+      downloadJpg.disabled = false;
+      draw();
     };
-
     img.src = e.target.result;
   };
-
   reader.readAsDataURL(file);
-});
-
-[
-  watermarkText,
-  fontSizeInput,
-  opacityInput,
-  spacingInput,
-  rotationInput
-].forEach(element => {
-  element.addEventListener("input", drawImageWithWatermark);
-});
-
-function updateValues(){
-  sizeValue.textContent = fontSizeInput.value;
-  opacityValue.textContent = opacityInput.value + "%";
-  spacingValue.textContent = spacingInput.value;
-  rotationValue.textContent = rotationInput.value + "°";
 }
 
-function drawImageWithWatermark(){
-  updateValues();
+[
+  watermarkText,fontSize,opacity,spacing,rotation,textColor,securityLevel
+].forEach(el => el.addEventListener("input", draw));
+
+function draw(){
+  updateLabels();
   if(!originalImage) return;
 
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.drawImage(originalImage,0,0);
 
+  drawRedactions();
+  drawWatermark();
+
+  if(tempRect){
+    ctx.save();
+    ctx.fillStyle = "rgba(0,0,0,.45)";
+    ctx.fillRect(tempRect.x,tempRect.y,tempRect.w,tempRect.h);
+    ctx.restore();
+  }
+}
+
+function updateLabels(){
+  sizeVal.textContent = fontSize.value;
+  opacityVal.textContent = opacity.value + "%";
+  spacingVal.textContent = spacing.value;
+  rotationVal.textContent = rotation.value + "°";
+}
+
+function drawWatermark(){
   const text = watermarkText.value.trim();
   if(!text) return;
 
-  const fontSize = Number(fontSizeInput.value);
-  const opacity = Number(opacityInput.value) / 100;
-  const spacing = Number(spacingInput.value);
-  const rotation = Number(rotationInput.value) * Math.PI / 180;
+  const fs = Number(fontSize.value);
+  const op = Number(opacity.value) / 100;
+  const gap = Number(spacing.value);
+  const angle = Number(rotation.value) * Math.PI / 180;
+  const color = hexToRgb(textColor.value);
 
   ctx.save();
-  ctx.font = `700 ${fontSize}px Arial`;
+  ctx.font = `800 ${fs}px Arial`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillStyle = `rgba(255,255,255,${opacity})`;
-  ctx.strokeStyle = `rgba(0,0,0,${opacity * 0.8})`;
-  ctx.lineWidth = Math.max(1, fontSize * 0.06);
+  ctx.lineWidth = Math.max(1, fs * .07);
 
-  ctx.translate(canvas.width / 2, canvas.height / 2);
-  ctx.rotate(rotation);
+  ctx.translate(canvas.width/2, canvas.height/2);
+  ctx.rotate(angle);
 
-  const diagonal = Math.sqrt(canvas.width ** 2 + canvas.height ** 2);
+  const diagonal = Math.sqrt(canvas.width**2 + canvas.height**2);
 
-  for(let x = -diagonal; x < diagonal; x += spacing){
-    for(let y = -diagonal; y < diagonal; y += spacing){
-      drawMultilineText(text, x, y, spacing * 1.7, fontSize * 1.25);
+  for(let x=-diagonal; x<diagonal; x+=gap){
+    for(let y=-diagonal; y<diagonal; y+=gap){
+      const waveX = x + Math.sin(y * 0.015) * 12;
+      const waveY = y + Math.cos(x * 0.015) * 12;
+
+      ctx.strokeStyle = `rgba(0,0,0,${op*.75})`;
+      ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${op})`;
+
+      drawMultiline(text,waveX,waveY,gap*1.6,fs*1.25);
     }
   }
 
   ctx.restore();
+
+  if(securityLevel.value !== "normal") drawSecurityLines(op);
+  if(securityLevel.value === "max") drawNoise(op);
 }
 
-function drawMultilineText(text, x, y, maxWidth, lineHeight){
+function drawMultiline(text,x,y,maxWidth,lineHeight){
   const words = text.split(" ");
   const lines = [];
   let line = "";
 
-  for(let i = 0; i < words.length; i++){
-    const testLine = line + words[i] + " ";
-    const width = ctx.measureText(testLine).width;
-
-    if(width > maxWidth && i > 0){
+  for(const word of words){
+    const test = line + word + " ";
+    if(ctx.measureText(test).width > maxWidth && line){
       lines.push(line.trim());
-      line = words[i] + " ";
+      line = word + " ";
     }else{
-      line = testLine;
+      line = test;
     }
   }
 
   lines.push(line.trim());
 
-  const startY = y - ((lines.length - 1) * lineHeight) / 2;
+  const startY = y - ((lines.length-1)*lineHeight)/2;
 
-  lines.forEach((lineText, index) => {
-    const currentY = startY + index * lineHeight;
-    ctx.strokeText(lineText, x, currentY);
-    ctx.fillText(lineText, x, currentY);
+  lines.forEach((l,i)=>{
+    ctx.strokeText(l,x,startY+i*lineHeight);
+    ctx.fillText(l,x,startY+i*lineHeight);
   });
 }
 
-downloadBtn.addEventListener("click", function(){
-  if(!originalImage) return;
+function drawSecurityLines(op){
+  ctx.save();
+  ctx.globalAlpha = Math.min(.18, op);
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 1;
 
-  const link = document.createElement("a");
-  link.download = "imagen-con-marca-de-agua.png";
-  link.href = canvas.toDataURL("image/png");
-  link.click();
+  for(let y=0; y<canvas.height; y+=28){
+    ctx.beginPath();
+    for(let x=0; x<canvas.width; x+=20){
+      const wave = Math.sin(x*.025 + y*.01) * 9;
+      if(x===0) ctx.moveTo(x,y+wave);
+      else ctx.lineTo(x,y+wave);
+    }
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function drawNoise(op){
+  ctx.save();
+  ctx.globalAlpha = Math.min(.12, op);
+  for(let i=0; i<canvas.width*canvas.height/900; i++){
+    const x = Math.random()*canvas.width;
+    const y = Math.random()*canvas.height;
+    const r = Math.random()*2+1;
+    ctx.fillStyle = Math.random()>.5 ? "#fff" : "#000";
+    ctx.beginPath();
+    ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawRedactions(){
+  ctx.save();
+  ctx.fillStyle = "#000";
+  redactions.forEach(r => ctx.fillRect(r.x,r.y,r.w,r.h));
+  ctx.restore();
+}
+
+redactBtn.addEventListener("click",()=>{
+  redactMode = !redactMode;
+  redactBtn.textContent = redactMode ? "✅ Modo ocultar activo" : "⬛ Ocultar zona";
 });
+
+clearRedactionsBtn.addEventListener("click",()=>{
+  redactions = [];
+  draw();
+});
+
+canvas.addEventListener("mousedown", startDraw);
+canvas.addEventListener("mousemove", moveDraw);
+canvas.addEventListener("mouseup", endDraw);
+
+canvas.addEventListener("touchstart", e => {
+  e.preventDefault();
+  startDraw(e.touches[0]);
+});
+
+canvas.addEventListener("touchmove", e => {
+  e.preventDefault();
+  moveDraw(e.touches[0]);
+});
+
+canvas.addEventListener("touchend", e => {
+  e.preventDefault();
+  endDraw();
+});
+
+function getCanvasPoint(e){
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x:(e.clientX-rect.left) * (canvas.width/rect.width),
+    y:(e.clientY-rect.top) * (canvas.height/rect.height)
+  };
+}
+
+function startDraw(e){
+  if(!redactMode || !originalImage) return;
+  drawing = true;
+  const p = getCanvasPoint(e);
+  startX = p.x;
+  startY = p.y;
+}
+
+function moveDraw(e){
+  if(!drawing) return;
+  const p = getCanvasPoint(e);
+  tempRect = {
+    x:Math.min(startX,p.x),
+    y:Math.min(startY,p.y),
+    w:Math.abs(p.x-startX),
+    h:Math.abs(p.y-startY)
+  };
+  draw();
+}
+
+function endDraw(){
+  if(!drawing || !tempRect) return;
+  redactions.push(tempRect);
+  tempRect = null;
+  drawing = false;
+  draw();
+}
+
+function download(type){
+  const link = document.createElement("a");
+  link.download = type === "image/jpeg"
+    ? "imagen-protegida.jpg"
+    : "imagen-protegida.png";
+  link.href = canvas.toDataURL(type, .95);
+  link.click();
+}
+
+downloadPng.addEventListener("click",()=>download("image/png"));
+downloadJpg.addEventListener("click",()=>download("image/jpeg"));
+
+function hexToRgb(hex){
+  const clean = hex.replace("#","");
+  return {
+    r:parseInt(clean.substring(0,2),16),
+    g:parseInt(clean.substring(2,4),16),
+    b:parseInt(clean.substring(4,6),16)
+  };
+}
 </script>
 </body>
 </html>
